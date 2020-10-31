@@ -24,7 +24,6 @@ public:
         pos++;
         if (pos == 5)
             pos = 0;
-        std::cout << 1 << std::endl;
          qDebug() << list[pos];
         m_playMusic->setNewMusicAndPlay(list[pos]);
     }

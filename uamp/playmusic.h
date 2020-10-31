@@ -20,6 +20,9 @@ public:
 
     void setNewMusic(const QString& name);
     void setNewMusicAndPlay(const QString& name);
+private:
+    QString getTime(qint64 time);
+    void setTimeMusic(qint64 valueTile, qint64 maxTime);
 
 private slots:
     void positionChanged(qint64 position);

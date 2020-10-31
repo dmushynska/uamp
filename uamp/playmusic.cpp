@@ -10,12 +10,14 @@ PlayMusic::PlayMusic(QWidget *parent) :
     ui->ButtinStop->hide();
     ui->ButtonPause->hide();
     m_media = new QMediaPlayer;
-//    m_media->setMedia(QUrl::fromLocalFile("/Users/solianovsk/Desktop/Ты Врёшь.mp3"));
-    m_media->setVolume(30);
     ui->progressMusic->setValue(0);
     connect(m_media, &QMediaPlayer::positionChanged, this, &PlayMusic::positionChanged);
     connect(m_media, &QMediaPlayer::stateChanged, this, &PlayMusic::stateChanged);
+    connect(ui->sliderVolume, &QSlider::valueChanged, this, [this] {
+        m_media->setVolume(ui->sliderVolume->value());
+    });
     window = qobject_cast<generalWindow*>(parent);
+    this->setTimeMusic(0, 0);
 }
 
 PlayMusic::~PlayMusic()
@@ -23,10 +25,22 @@ PlayMusic::~PlayMusic()
     delete ui;
 }
 
+QString PlayMusic::getTime(qint64 time) {
+    time /= 1000;
+    QString strSecond = QString::number(time % 60);
+    time /= 60;
+    QString strMinute = QString::number(time % 60);
+    return strMinute + ":" + strSecond;
+}
+
+void PlayMusic::setTimeMusic(qint64 valueTile, qint64 maxTime) {
+    ui->labelTime->setText(this->getTime(valueTile) + "/" + this->getTime(maxTime));
+}
 
 void PlayMusic::setNewMusic(const QString& name) {
     ui->progressMusic->setValue(0);
     m_media->setMedia(QUrl::fromLocalFile(name));
+    this->setTimeMusic(0, 0);
 }
 
 void PlayMusic::setNewMusicAndPlay(const QString& name) {
@@ -48,8 +62,10 @@ void PlayMusic::stateChanged(QMediaPlayer::State state) {
 }
 
 void PlayMusic::positionChanged(qint64 position) {
-    if (m_media->isAudioAvailable())
+    if (m_media->isAudioAvailable()) {
         ui->progressMusic->setValue((position * 100) / m_media->duration());
+        this->setTimeMusic(position, m_media->duration());
+    }
 }
 
 void PlayMusic::on_ButtonPrevious_clicked()
@@ -94,7 +110,9 @@ void PlayMusic::on_ButtonPlay_clicked()
             ui->ButtonPause->show();
         m_media->play();
         m_playMusic = true;
+         std::cout  << 22 <<std::endl;
     }
+    std::cout  << 23 <<std::endl;
 }
 
 void PlayMusic::on_ButtonFastForward_clicked()
@@ -105,5 +123,4 @@ void PlayMusic::on_ButtonFastForward_clicked()
 void PlayMusic::on_ButtonNext_clicked()
 {
     window->nextMusic();
-
 }
