@@ -35,6 +35,7 @@ public:
         m_playMusic->setNewMusicAndPlay(list[pos]);
     }
 
+
 private slots:
 
 
@@ -44,7 +45,7 @@ private:
     MusicList *m_MusicList;
     int pos = 0;
     QVector <QString>  list = {"/Users/solianovsk/Desktop/2L-110_04_stereo.mqa.flac", "/Users/solianovsk/Desktop/3285.wav", "/Users/solianovsk/Desktop/videoplayback.mp4", "/Users/solianovsk/Desktop/Ты Врёшь.mp3",
-                              "Maxime Abbey - Operation Stealth - The Ballad of J. & J.ogg"};
+                              "/Users/solianovsk/Desktop/Maxime Abbey - Operation Stealth - The Ballad of J. & J.ogg"};
 };
 
 #endif // GENERALWINDOW_H

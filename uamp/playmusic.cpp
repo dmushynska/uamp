@@ -10,9 +10,9 @@ PlayMusic::PlayMusic(QWidget *parent) :
     ui->ButtinStop->hide();
     ui->ButtonPause->hide();
     m_media = new QMediaPlayer;
-    ui->progressMusic->setValue(0);
     connect(m_media, &QMediaPlayer::positionChanged, this, &PlayMusic::positionChanged);
     connect(m_media, &QMediaPlayer::stateChanged, this, &PlayMusic::stateChanged);
+    connect(m_media, &QMediaPlayer::mediaStatusChanged, this, &PlayMusic::mediaStatusChanged);
     connect(ui->sliderVolume, &QSlider::valueChanged, this, [this] {
         m_media->setVolume(ui->sliderVolume->value());
     });
@@ -23,6 +23,26 @@ PlayMusic::PlayMusic(QWidget *parent) :
 PlayMusic::~PlayMusic()
 {
     delete ui;
+}
+
+void PlayMusic::mediaStatusChanged(QMediaPlayer::MediaStatus status) {
+    std::cout << status << std::endl;
+    if (status == QMediaPlayer::EndOfMedia)
+        ui->progressMusic->setValue(100);
+    if (status == QMediaPlayer::LoadedMedia && this->m_playMusic)
+        m_media->play();
+    if (status == QMediaPlayer::LoadedMedia)
+        this->setTimeMusic(0, m_media->duration());
+    if (status == QMediaPlayer::InvalidMedia) {
+        if (ui->ButtonPlay->isHidden())
+            ui->ButtonPlay->show();
+        if (!ui->ButtinStop->isHidden())
+            ui->ButtinStop->hide();
+        if (!ui->ButtonPause->isHidden())
+            ui->ButtonPause->hide();
+        this->setTimeMusic(0, 0);
+    }
+
 }
 
 QString PlayMusic::getTime(qint64 time) {
@@ -40,24 +60,38 @@ void PlayMusic::setTimeMusic(qint64 valueTile, qint64 maxTime) {
 void PlayMusic::setNewMusic(const QString& name) {
     ui->progressMusic->setValue(0);
     m_media->setMedia(QUrl::fromLocalFile(name));
-    this->setTimeMusic(0, 0);
+    m_playMusic = false;
 }
 
 void PlayMusic::setNewMusicAndPlay(const QString& name) {
     this->setNewMusic(name);
+    m_playMusic = true;
     this->on_ButtonPlay_clicked();
 }
 
 
 void PlayMusic::stateChanged(QMediaPlayer::State state) {
-    if (state == QMediaPlayer::StoppedState && m_playMusic) {
+    if (state == QMediaPlayer::StoppedState) {
         if (ui->ButtonPlay->isHidden())
             ui->ButtonPlay->show();
         if (!ui->ButtinStop->isHidden())
             ui->ButtinStop->hide();
         if (!ui->ButtonPause->isHidden())
             ui->ButtonPause->hide();
-        ui->progressMusic->setValue(100);
+    }
+    if (state == QMediaPlayer::PlayingState) {
+        if (!ui->ButtonPlay->isHidden())
+            ui->ButtonPlay->hide();
+        if (ui->ButtinStop->isHidden())
+            ui->ButtinStop->show();
+        if (ui->ButtonPause->isHidden())
+            ui->ButtonPause->show();
+    }
+    if (state == QMediaPlayer::PausedState) {
+        if (ui->ButtonPlay->isHidden())
+            ui->ButtonPlay->show();
+        if (!ui->ButtonPause->isHidden())
+            ui->ButtonPause->hide();
     }
 }
 
@@ -80,39 +114,17 @@ void PlayMusic::on_ButtonRewind_clicked()
 
 void PlayMusic::on_ButtonPause_clicked()
 {
-    if (ui->ButtonPlay->isHidden())
-        ui->ButtonPlay->show();
-    if (!ui->ButtonPause->isHidden())
-        ui->ButtonPause->hide();
     m_media->pause();
 }
 
 void PlayMusic::on_ButtinStop_clicked()
 {
-    if (ui->ButtonPlay->isHidden())
-        ui->ButtonPlay->show();
-    if (!ui->ButtinStop->isHidden())
-        ui->ButtinStop->hide();
-    if (!ui->ButtonPause->isHidden())
-        ui->ButtonPause->hide();
     m_media->stop();
-    ui->progressMusic->setValue(0);
 }
 
 void PlayMusic::on_ButtonPlay_clicked()
 {
-    if (m_media->isAudioAvailable()) {
-        if (!ui->ButtonPlay->isHidden())
-            ui->ButtonPlay->hide();
-        if (ui->ButtinStop->isHidden())
-            ui->ButtinStop->show();
-        if (ui->ButtonPause->isHidden())
-            ui->ButtonPause->show();
-        m_media->play();
-        m_playMusic = true;
-         std::cout  << 22 <<std::endl;
-    }
-    std::cout  << 23 <<std::endl;
+    m_media->play();
 }
 
 void PlayMusic::on_ButtonFastForward_clicked()

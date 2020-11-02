@@ -24,10 +24,13 @@ private:
     QString getTime(qint64 time);
     void setTimeMusic(qint64 valueTile, qint64 maxTime);
 
+
 private slots:
     void positionChanged(qint64 position);
 
     void stateChanged(QMediaPlayer::State state);
+
+    void mediaStatusChanged(QMediaPlayer::MediaStatus status);
 
     void on_ButtonPrevious_clicked();
 
