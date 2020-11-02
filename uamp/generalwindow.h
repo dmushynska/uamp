@@ -25,14 +25,14 @@ public:
         if (pos == 5)
             pos = 0;
          qDebug() << list[pos];
-        m_playMusic->setNewMusicAndPlay(list[pos]);
+        m_playMusic->setNewMusicAndPlay(QString::number(pos), list[pos]);
     }
     void previousMusic (void) {
         --pos;
         if (pos == -1)
             pos = 4;
         qDebug() << list[pos];
-        m_playMusic->setNewMusicAndPlay(list[pos]);
+        m_playMusic->setNewMusicAndPlay(QString::number(pos), list[pos]);
     }
 
 

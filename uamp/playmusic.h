@@ -18,8 +18,8 @@ public:
     explicit PlayMusic(QWidget *parent = nullptr);
     ~PlayMusic();
 
-    void setNewMusic(const QString& name);
-    void setNewMusicAndPlay(const QString& name);
+    void setNewMusic(const QString& name, const QString& path);
+    void setNewMusicAndPlay(const QString& name, const QString& path);
 private:
     QString getTime(qint64 time);
     void setTimeMusic(qint64 valueTile, qint64 maxTime);
