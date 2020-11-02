@@ -16,8 +16,10 @@ PlayMusic::PlayMusic(QWidget *parent) :
     connect(ui->sliderVolume, &QSlider::valueChanged, this, [this] {
         m_media->setVolume(ui->sliderVolume->value());
     });
+    connect(ui->sliderMusic, &QSlider::valueChanged, this, &PlayMusic::valueChangedSliderMusic);
     window = qobject_cast<generalWindow*>(parent);
     this->setTimeMusic(0, 0);
+    ui->sliderMusic->setTracking(false);
 }
 
 PlayMusic::~PlayMusic()
@@ -54,7 +56,7 @@ void PlayMusic::setTimeMusic(qint64 valueTile, qint64 maxTime) {
 }
 
 void PlayMusic::setNewMusic(const QString& name, const QString& path) {
-    ui->progressMusic->setValue(0);
+    ui->sliderMusic->setValue(0);
     m_media->setMedia(QUrl::fromLocalFile(path));
     m_playMusic = false;
     ui->NameMusic->setText(name);
@@ -76,9 +78,9 @@ void PlayMusic::stateChanged(QMediaPlayer::State state) {
         if (!ui->ButtonPause->isHidden())
             ui->ButtonPause->hide();
         if (m_media->mediaStatus() != QMediaPlayer::EndOfMedia)
-            ui->progressMusic->setValue(0);
+            ui->sliderMusic->setValue(0);
         else {
-            ui->progressMusic->setValue(100);
+            ui->sliderMusic->setValue(100);
         }
     }
     if (state == QMediaPlayer::PlayingState) {
@@ -97,9 +99,19 @@ void PlayMusic::stateChanged(QMediaPlayer::State state) {
     }
 }
 
+void PlayMusic::valueChangedSliderMusic(int value) {
+    m_media->blockSignals(true);
+    m_media->setPosition(m_media->duration() * value / 100);
+    m_media->blockSignals(false);
+}
+
 void PlayMusic::positionChanged(qint64 position) {
     if (m_media->isAudioAvailable()) {
-        ui->progressMusic->setValue((position * 100) / m_media->duration());
+        if(!ui->sliderMusic->isSliderDown()) {
+            ui->sliderMusic->blockSignals(true);
+            ui->sliderMusic->setValue((position * 100) / m_media->duration());
+            ui->sliderMusic->blockSignals(false);
+        }
         this->setTimeMusic(position, m_media->duration());
     }
 }

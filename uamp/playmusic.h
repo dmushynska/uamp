@@ -23,7 +23,7 @@ public:
 private:
     QString getTime(qint64 time);
     void setTimeMusic(qint64 valueTile, qint64 maxTime);
-
+    void valueChangedSliderMusic(int value);
 
 private slots:
     void positionChanged(qint64 position);
