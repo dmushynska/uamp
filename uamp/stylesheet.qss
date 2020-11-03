@@ -1,0 +1,17 @@
+musicWidget {
+    border: 1px solid white;
+    border-radius: 4px;
+}
+
+musicWidget:hover {
+    background: green;
+    border: 1px solid white;
+    border-radius: 4px;
+}
+/*
+musicWidget:active  {
+    background: red;
+    border: 1px solid white;
+    border-radius: 4px;
+}
+*/

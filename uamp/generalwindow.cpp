@@ -11,7 +11,6 @@ generalWindow::generalWindow(QWidget *parent) :
     this->ui->generalLayout->addWidget(m_playMusic);
     m_MusicList = new MusicList;
     this->ui->horizontalLayout->addWidget(m_MusicList);
-
 }
 
 
