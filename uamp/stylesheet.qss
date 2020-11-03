@@ -2,6 +2,17 @@ musicWidget {
     border: 1px solid white;
     border-radius: 4px;
 }
+musicWidget#Play {
+    background: red;
+    border: 1px solid white;
+    border-radius: 4px;
+}
+
+musicWidget#Play:hover {
+    background: green;
+    border: 1px solid white;
+    border-radius: 4px;
+}
 
 musicWidget:hover {
     background: green;

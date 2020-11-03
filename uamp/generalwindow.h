@@ -20,21 +20,10 @@ class generalWindow : public QMainWindow
 public:
     explicit generalWindow(QWidget *parent = nullptr);
     ~generalWindow();
-    void nextMusic (void) {
-        pos++;
-        if (pos == 5)
-            pos = 0;
-         qDebug() << list[pos];
-        m_playMusic->setNewMusicAndPlay(QString::number(pos), list[pos]);
-    }
-    void previousMusic (void) {
-        --pos;
-        if (pos == -1)
-            pos = 4;
-        qDebug() << list[pos];
-        m_playMusic->setNewMusicAndPlay(QString::number(pos), list[pos]);
-    }
-
+    void nextMusic (void);
+    void previousMusic (void);
+    void playMusic (const QString& name);
+    void resetObjectName(void);
 
 private slots:
 
@@ -43,9 +32,9 @@ private:
     Ui::generalWindow *ui;
     PlayMusic *m_playMusic;
     MusicList *m_MusicList;
-    int pos = 0;
-    QVector <QString>  list = {"/Users/solianovsk/Desktop/2L-110_04_stereo.mqa.flac", "/Users/solianovsk/Desktop/3285.wav", "/Users/solianovsk/Desktop/videoplayback.mp4", "/Users/solianovsk/Desktop/Ты Врёшь.mp3",
-                              "/Users/solianovsk/Desktop/Maxime Abbey - Operation Stealth - The Ballad of J. & J.ogg"};
+//    int pos = 0;
+//    QVector <QString>  list = {"/Users/solianovsk/Desktop/2L-110_04_stereo.mqa.flac", "/Users/solianovsk/Desktop/3285.wav", "/Users/solianovsk/Desktop/videoplayback.mp4", "/Users/solianovsk/Desktop/Ты Врёшь.mp3",
+//                              "/Users/solianovsk/Desktop/Maxime Abbey - Operation Stealth - The Ballad of J. & J.ogg"};
 };
 
 #endif // GENERALWINDOW_H

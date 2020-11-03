@@ -1,5 +1,8 @@
 #include "musicwidget.h"
 #include "ui_musicwidget.h"
+#include "generalwindow.h"
+#include "musiclist.h"
+#include <QtDebug>
 
 musicWidget::musicWidget(QWidget *parent) :
     QWidget(parent),
@@ -7,18 +10,32 @@ musicWidget::musicWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     this->installEventFilter(this);
-    connect(this, &musicWidget::clicked, this, []{
-        std::cout<< "adwadw" << std::endl;
-    });
-    connect(this, &musicWidget::rightClicked, this, [this]{
-        std::cout<< "adwadw2" << std::endl;
-        ui->Number->setText("2");
-//        qobject_cast<QVBoxLayout*>(this->parent())->
+    m_main = qobject_cast<generalWindow*>(parent);
+//    connect(this, &musicWidget::clicked, this, []{
+//        std::cout<< "adwadw" << std::endl;
+//    });
+    connect(this, &musicWidget::rightClicked, this, []{
+        std::cout<< "rightClicked" << std::endl;
 
     });
-    connect(this, &musicWidget::dubleClick, this, []{
-        std::cout<< "adwadw3" << std::endl;
-    });
+//    this->setObjectName("Play");
+    connect(this, &musicWidget::dubleClick, this, &musicWidget::clickDubleWidget);
+}
+
+void musicWidget::clickDubleWidget(void) {
+    m_main->resetObjectName();
+    setObjectName("Play");
+    this->m_main->playMusic(this->ui->nameMusic->text());
+    this->style()->unpolish(this);
+    this->style()->polish(this);
+}
+
+void musicWidget::setMusic(const QString& name) {
+    ui->nameMusic->setText(name);
+}
+
+QString musicWidget::getMusic(void) {
+    return ui->nameMusic->text();
 }
 
 musicWidget::~musicWidget()
@@ -33,3 +50,40 @@ void musicWidget::mousePressEvent(QMouseEvent* event) {
    if (event->button() == Qt::RightButton)
         emit rightClicked();
 }
+
+void musicWidget::paintEvent(QPaintEvent *)
+{
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+bool musicWidget::eventFilter(QObject *obj, QEvent *event)
+{
+    if (obj == this) {
+        if (event->type() == QEvent::MouseButtonDblClick &&  static_cast<QMouseEvent*>(event)->button() == Qt::LeftButton) {
+            emit dubleClick();
+//            if (event->type() == QEvent::MouseMove) {
+//                std::cout << "11" << std::endl;
+            return  true;
+//            }
+//            else if (event->type() == QEvent::MouseButtonDblClick) {
+//                    std::cout << "22" << std::endl;
+//                QMouseEvent *keyEvent = static_cast<QMouseEvent*>(event);
+//                qDebug() << "Ate key press" << keyEvent->button();
+//                return true;
+//            } else if (event->type() == QEvent::MouseButtonRelease) {
+//                            std::cout << "24" << std::endl;
+//                        QMouseEvent *keyEvent = static_cast<QMouseEvent*>(event);
+//                        qDebug() << "Ate key press" << keyEvent->button();
+//                        return true;
+//                    } else{
+//                return false;
+        }
+    } else {
+        // pass the event on to the parent class
+        return eventFilter(obj, event);
+    }
+    return false;
+};

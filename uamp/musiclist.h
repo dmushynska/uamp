@@ -7,6 +7,8 @@ namespace Ui {
 class MusicList;
 }
 
+class generalWindow;
+
 class MusicList : public QWidget
 {
     Q_OBJECT
@@ -14,9 +16,14 @@ class MusicList : public QWidget
 public:
     explicit MusicList(QWidget *parent = nullptr);
     ~MusicList();
+    void resetObjectName(void);
+    void nextMusic (void);
+    void previousMusic (void);
+//    int getMax
 
 private:
     Ui::MusicList *ui;
+    generalWindow *m_main;
 };
 
 #endif // MUSICLIST_H
