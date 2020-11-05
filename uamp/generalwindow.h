@@ -8,6 +8,7 @@
 #include <QVector>
 
 class MusicList;
+class DTagMusic;
 
 namespace Ui {
 class generalWindow;
@@ -24,6 +25,7 @@ public:
     void previousMusic (void);
     void playMusic (const QString& name);
     void resetObjectName(void);
+    void showEditTagMusic(const QString& path);
 
 private slots:
 
@@ -32,6 +34,7 @@ private:
     Ui::generalWindow *ui;
     PlayMusic *m_playMusic;
     MusicList *m_MusicList;
+    DTagMusic *m_WindowTag;
 //    int pos = 0;
 //    QVector <QString>  list = {"/Users/solianovsk/Desktop/2L-110_04_stereo.mqa.flac", "/Users/solianovsk/Desktop/3285.wav", "/Users/solianovsk/Desktop/videoplayback.mp4", "/Users/solianovsk/Desktop/Ты Врёшь.mp3",
 //                              "/Users/solianovsk/Desktop/Maxime Abbey - Operation Stealth - The Ballad of J. & J.ogg"};

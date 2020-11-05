@@ -29,19 +29,22 @@ SOURCES += \
         generalwindow.cpp \
     playmusic.cpp \
     musiclist.cpp \
-    musicwidget.cpp
+    musicwidget.cpp \
+    dtagmusic.cpp
 
 HEADERS += \
         generalwindow.h \
     playmusic.h \
     musiclist.h \
-    musicwidget.h
+    musicwidget.h \
+    dtagmusic.h
 
 FORMS += \
         generalwindow.ui \
     playmusic.ui \
     musiclist.ui \
-    musicwidget.ui
+    musicwidget.ui \
+    dtagmusic.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

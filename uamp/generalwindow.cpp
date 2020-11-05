@@ -1,26 +1,34 @@
 #include "generalwindow.h"
 #include "ui_generalwindow.h"
 #include "musiclist.h"
+#include "dtagmusic.h"
 
 generalWindow::generalWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::generalWindow)
 {
     ui->setupUi(this);
+    this->setWindowFlags(Qt::Window);
     m_playMusic = new PlayMusic(this);
     this->ui->generalLayout->addWidget(m_playMusic);
     m_MusicList = new MusicList(this);
     this->ui->horizontalLayout->addWidget(m_MusicList);
+    m_WindowTag = new DTagMusic(this);
 }
-
 
 generalWindow::~generalWindow()
 {
     delete ui;
     delete m_playMusic;
     delete m_MusicList;
+    delete m_WindowTag;
 }
 
+
+void generalWindow::showEditTagMusic(const QString& path) {
+    m_WindowTag->setTagWindow(path);
+    m_WindowTag->show();
+}
 void generalWindow::resetObjectName(void) {
     this->m_MusicList->resetObjectName();
 }

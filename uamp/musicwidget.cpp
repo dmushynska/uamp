@@ -3,6 +3,7 @@
 #include "generalwindow.h"
 #include "musiclist.h"
 #include <QtDebug>
+#include <QMenu>
 
 musicWidget::musicWidget(QWidget *parent) :
     QWidget(parent),
@@ -14,13 +15,28 @@ musicWidget::musicWidget(QWidget *parent) :
 //    connect(this, &musicWidget::clicked, this, []{
 //        std::cout<< "adwadw" << std::endl;
 //    });
-    connect(this, &musicWidget::rightClicked, this, []{
-        std::cout<< "rightClicked" << std::endl;
+    connect(this, &musicWidget::rightClicked, this, [this]{
+//qDebug() << "lol";
+        QMenu rightMenu;
+        QEvent * leave = new QEvent(QEvent::HoverEnter);
+        QApplication::sendEvent(this, leave);
+        delete leave;
+        rightMenu.addAction("Show tag info", this, [this] {
+            this->m_main->showEditTagMusic(m_path);
+        });
+        rightMenu.show();
+        rightMenu.exec(QCursor::pos());
+//        leave = new QEvent(QEvent::HoverLeave);
+//        QApplication::sendEvent(this, leave);
+//        delete leave;
 
     });
 //    this->setObjectName("Play");
     connect(this, &musicWidget::dubleClick, this, &musicWidget::clickDubleWidget);
 }
+
+
+
 
 void musicWidget::clickDubleWidget(void) {
     m_main->resetObjectName();
@@ -32,6 +48,7 @@ void musicWidget::clickDubleWidget(void) {
 
 void musicWidget::setMusic(const QString& name) {
     ui->nameMusic->setText(name);
+    m_path = name;
 }
 
 QString musicWidget::getMusic(void) {

@@ -40,6 +40,7 @@ protected:
 private:
     Ui::musicWidget *ui;
     generalWindow *m_main;
+    QString m_path;
 };
 
 #endif // MUSICWIDGET_H

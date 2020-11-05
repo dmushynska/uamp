@@ -17,7 +17,7 @@ PlayMusic::PlayMusic(QWidget *parent) :
         m_media->setVolume(ui->sliderVolume->value());
     });
     connect(ui->sliderMusic, &QSlider::valueChanged, this, &PlayMusic::valueChangedSliderMusic);
-    window = qobject_cast<generalWindow*>(parent);
+    m_window = qobject_cast<generalWindow*>(parent);
     this->setTimeMusic(0, 0);
     ui->sliderMusic->setTracking(false);
 }
@@ -71,16 +71,17 @@ void PlayMusic::setNewMusicAndPlay(const QString& name, const QString& path) {
 
 void PlayMusic::stateChanged(QMediaPlayer::State state) {
     if (state == QMediaPlayer::StoppedState) {
-        if (ui->ButtonPlay->isHidden())
-            ui->ButtonPlay->show();
         if (!ui->ButtinStop->isHidden())
             ui->ButtinStop->hide();
         if (!ui->ButtonPause->isHidden())
             ui->ButtonPause->hide();
+        if (ui->ButtonPlay->isHidden())
+            ui->ButtonPlay->show();
         if (m_media->mediaStatus() != QMediaPlayer::EndOfMedia)
             ui->sliderMusic->setValue(0);
         else {
             ui->sliderMusic->setValue(100);
+            m_window->nextMusic();
         }
     }
     if (state == QMediaPlayer::PlayingState) {
@@ -92,10 +93,10 @@ void PlayMusic::stateChanged(QMediaPlayer::State state) {
             ui->ButtonPause->show();
     }
     if (state == QMediaPlayer::PausedState) {
-        if (ui->ButtonPlay->isHidden())
-            ui->ButtonPlay->show();
         if (!ui->ButtonPause->isHidden())
             ui->ButtonPause->hide();
+        if (ui->ButtonPlay->isHidden())
+            ui->ButtonPlay->show();
     }
 }
 
@@ -118,7 +119,7 @@ void PlayMusic::positionChanged(qint64 position) {
 
 void PlayMusic::on_ButtonPrevious_clicked()
 {
-    window->previousMusic();
+    m_window->previousMusic();
 }
 
 void PlayMusic::on_ButtonRewind_clicked()
@@ -148,5 +149,5 @@ void PlayMusic::on_ButtonFastForward_clicked()
 
 void PlayMusic::on_ButtonNext_clicked()
 {
-    window->nextMusic();
+    m_window->nextMusic();
 }

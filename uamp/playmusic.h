@@ -50,7 +50,7 @@ private:
     Ui::PlayMusic *ui;
     QMediaPlayer *m_media;
     bool m_playMusic = false;
-    generalWindow *window;
+    generalWindow *m_window;
 };
 
 #endif // PLAYMUSIC_H
