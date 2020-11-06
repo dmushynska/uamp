@@ -34,4 +34,5 @@
 #user ignor
 build*
 .DS_Store
+./uamp
 *.autosave

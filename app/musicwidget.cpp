@@ -46,9 +46,10 @@ void musicWidget::clickDubleWidget(void) {
     this->style()->polish(this);
 }
 
-void musicWidget::setMusic(const QString& name) {
+bool musicWidget::setMusic(const QString& name) {
     ui->nameMusic->setText(name);
     m_path = name;
+    return true;
 }
 
 QString musicWidget::getMusic(void) {

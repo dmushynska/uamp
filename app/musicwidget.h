@@ -25,7 +25,7 @@ public:
 
 
     void paintEvent(QPaintEvent *);
-    void setMusic(const QString& name);
+    bool setMusic(const QString& name);
     QString getMusic(void);
     bool eventFilter(QObject *obj, QEvent *event);
     void clickDubleWidget(void);

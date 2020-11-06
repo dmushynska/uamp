@@ -25,6 +25,10 @@ generalWindow::~generalWindow()
 }
 
 
+void generalWindow::addNewMusicToQueue(const QString& path) {
+    this->m_MusicList->addNewMusic(path);
+}
+
 void generalWindow::showEditTagMusic(const QString& path) {
     m_WindowTag->setTagWindow(path);
     m_WindowTag->show();
@@ -41,6 +45,11 @@ void generalWindow::nextMusic (void) {
     m_MusicList->nextMusic();
 }
 
+void generalWindow::cleanListMusic(void) {
+    m_MusicList->cleanList();
+}
+
 void generalWindow::previousMusic (void) {
+//    m_MusicList->cleanList();
     m_MusicList->previousMusic();
 }

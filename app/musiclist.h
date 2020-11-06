@@ -19,6 +19,8 @@ public:
     void resetObjectName(void);
     void nextMusic (void);
     void previousMusic (void);
+    void cleanList (void);
+    void addNewMusic(const QString& path);
 //    int getMax
 
 private:

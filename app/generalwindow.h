@@ -26,6 +26,8 @@ public:
     void playMusic (const QString& name);
     void resetObjectName(void);
     void showEditTagMusic(const QString& path);
+    void cleanListMusic(void);
+    void addNewMusicToQueue(const QString& path);
 
 private slots:
 

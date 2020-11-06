@@ -9,12 +9,6 @@ MusicList::MusicList(QWidget *parent) :
 {
     ui->setupUi(this);
     m_main = qobject_cast<generalWindow*>(parent);
-    ui->layaoutPlayMusicList->insertWidget(0, new musicWidget(m_main));
-    qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(0)->widget())->setMusic("/Users/solianovsk/Desktop/2L-110_04_stereo.mqa.flac");
-    ui->layaoutPlayMusicList->insertWidget(0, new musicWidget(m_main));
-    qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(0)->widget())->setMusic("/Users/solianovsk/Desktop/3285.wav");
-    ui->layaoutPlayMusicList->insertWidget(0, new musicWidget(m_main));
-    qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(0)->widget())->setMusic("/Users/solianovsk/Desktop/videoplayback.mp4");
 }
 
 void MusicList::resetObjectName(void) {
@@ -62,6 +56,22 @@ void MusicList::previousMusic (void) {
         }
     }
     qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(0)->widget())->clickDubleWidget();
+}
+
+void MusicList::cleanList (void) {
+    for (int i = 0; i < ui->layaoutPlayMusicList->count() - 1;) {
+        delete ui->layaoutPlayMusicList->takeAt(i)->widget();
+    }
+}
+
+void MusicList::addNewMusic(const QString& path) {
+    musicWidget *newMusic = new musicWidget(m_main);
+    if (!newMusic->setMusic(path)) {
+        delete newMusic;
+    }
+    else {
+        ui->layaoutPlayMusicList->insertWidget(ui->layaoutPlayMusicList->count() - 1, newMusic);
+    }
 }
 
 MusicList::~MusicList()
