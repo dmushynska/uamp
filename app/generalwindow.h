@@ -3,12 +3,13 @@
 
 #include <QMainWindow>
 
-#include "playmusic.h"
 #include <iostream>
 #include <QVector>
 
 class MusicList;
 class DTagMusic;
+class WindowSetting;
+class PlayMusic;
 
 namespace Ui {
 class generalWindow;
@@ -23,7 +24,7 @@ public:
     ~generalWindow();
     void nextMusic (void);
     void previousMusic (void);
-    void playMusic (const QString& name);
+    void playMusic (const QString& name, const QString& path);
     void resetObjectName(void);
     void showEditTagMusic(const QString& path);
     void cleanListMusic(void);
@@ -31,15 +32,15 @@ public:
 
 private slots:
 
+    void on_action_Setting_triggered();
+    void on_action_Add_music_to_Queue_triggered();
 
 private:
     Ui::generalWindow *ui;
     PlayMusic *m_playMusic;
     MusicList *m_MusicList;
     DTagMusic *m_WindowTag;
-//    int pos = 0;
-//    QVector <QString>  list = {"/Users/solianovsk/Desktop/2L-110_04_stereo.mqa.flac", "/Users/solianovsk/Desktop/3285.wav", "/Users/solianovsk/Desktop/videoplayback.mp4", "/Users/solianovsk/Desktop/Ты Врёшь.mp3",
-//                              "/Users/solianovsk/Desktop/Maxime Abbey - Operation Stealth - The Ballad of J. & J.ogg"};
+    WindowSetting *m_WindowSetting;
 };
 
 #endif // GENERALWINDOW_H

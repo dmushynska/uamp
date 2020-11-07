@@ -21,6 +21,7 @@ public:
     void previousMusic (void);
     void cleanList (void);
     void addNewMusic(const QString& path);
+    void customContextMenuRequested(const QPoint &pos);
 //    int getMax
 
 private:

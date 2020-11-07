@@ -26,7 +26,7 @@ DTagMusic::DTagMusic(QWidget *parent) :
 //            scene.addItem(&item);
 //            ui->graphicsView->scene()->addItem(new QGraphicsPixmapItem(QPixmap::fromImage(QImage("/Users/solianovsk/Desktop/Screen Shot 2020-11-04 at 5.36.40 PM.png"))));
 //            QString filename = "X:/my_image";
-//            QImage image("/Users/solianovsk/Desktop/Screen Shot 2020-11-04 at 5.36.40 PM.png");
+//            QImage image("/Users/solianovsk/Desktop/dmushynska.png");
 //            QLabel *a = new QLabel;
 //    ui->m_img->setScaledContents(true);
 //            ui->m_img->setPixmap(QPixmap::fromImage(image));

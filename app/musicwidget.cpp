@@ -4,6 +4,7 @@
 #include "musiclist.h"
 #include <QtDebug>
 #include <QMenu>
+#include <QFileDialog>
 
 musicWidget::musicWidget(QWidget *parent) :
     QWidget(parent),
@@ -15,23 +16,36 @@ musicWidget::musicWidget(QWidget *parent) :
 //    connect(this, &musicWidget::clicked, this, []{
 //        std::cout<< "adwadw" << std::endl;
 //    });
-    connect(this, &musicWidget::rightClicked, this, [this]{
-        QMenu rightMenu;
-        rightMenu.addAction("Show tag info", this, [this] {
-            this->m_main->showEditTagMusic(m_path);
-        });
-        rightMenu.show();
-        rightMenu.exec(QCursor::pos());
-        if (QWidget::mapToGlobal(this->pos()).x() > QCursor::pos().x()
-            || QWidget::mapToGlobal(this->pos()).x() + this->size().width() < QCursor::pos().x()
-            || QWidget::mapToGlobal(this->pos()).y() - this->pos().y() > QCursor::pos().y()
-            || QWidget::mapToGlobal(this->pos()).y() - this->pos().y() + this->size().height() < QCursor::pos().y())
-        {
-            QEvent *leave = new QEvent(QEvent::HoverLeave);
-            QApplication::sendEvent(this, leave);
-            delete leave;
-        }
-    });
+//    connect(this, &musicWidget::rightClicked, this, [this]{
+//        QMenu rightMenu;
+//        rightMenu.addAction("Show tag info music", this, [this] {
+//            this->m_main->showEditTagMusic(m_path);
+//        });
+////        rightMenu.addAction("Add new music", this, [this] {
+////            qDebug() << QFileDialog::getOpenFileName(
+////                            this,
+////                            tr("Open Track"),
+////                            QDir::currentPath(),
+////                            tr("Audio-Files(*.mp3, *.wav, *.mp4, *.flac)"));
+////        });
+//        rightMenu.addAction("Delete music to Queue", this, [this] {
+////            this->m_main->showEditTagMusic(m_path);
+//            this->m_main->cleanListMusic();
+////            delete this;
+////            return;
+//        });
+//        rightMenu.show();
+//        rightMenu.exec(QCursor::pos());
+//        if (QWidget::mapToGlobal(this->pos()).x() > QCursor::pos().x()
+//            || QWidget::mapToGlobal(this->pos()).x() + this->size().width() < QCursor::pos().x()
+//            || QWidget::mapToGlobal(this->pos()).y() - this->pos().y() > QCursor::pos().y()
+//            || QWidget::mapToGlobal(this->pos()).y() - this->pos().y() + this->size().height() < QCursor::pos().y())
+//        {
+//            QEvent *leave = new QEvent(QEvent::HoverLeave);
+//            QApplication::sendEvent(this, leave);
+//            delete leave;
+//        }
+//    });
     connect(this, &musicWidget::dubleClick, this, &musicWidget::clickDubleWidget);
 }
 
@@ -41,19 +55,31 @@ musicWidget::musicWidget(QWidget *parent) :
 void musicWidget::clickDubleWidget(void) {
     m_main->resetObjectName();
     setObjectName("Play");
-    this->m_main->playMusic(this->ui->nameMusic->text());
+    this->m_main->playMusic(this->ui->nameMusic->text(), this->m_path);
     this->style()->unpolish(this);
     this->style()->polish(this);
 }
 
-bool musicWidget::setMusic(const QString& name) {
-    ui->nameMusic->setText(name);
-    m_path = name;
+
+bool musicWidget::setMusic(const QString& path) {
+    TagLib::FileRef f(path.toUtf8().constData());
+    ui->Artist->setText(f.tag()->artist().toCString());
+    ui->nameMusic->setText(f.tag()->title().toCString());
+    m_ChekFile.addPath(path);
+    connect(&m_ChekFile, &QFileSystemWatcher::fileChanged, this, &musicWidget::fileChanged);
+    m_path = path;
     return true;
 }
 
-QString musicWidget::getMusic(void) {
-    return ui->nameMusic->text();
+void musicWidget::fileChanged(const QString &path) {
+    TagLib::FileRef f(path.toUtf8().constData());
+    ui->Artist->setText(f.tag()->artist().toCString());
+    ui->nameMusic->setText(f.tag()->title().toCString());
+    qDebug() << path;
+}
+
+QString musicWidget::getPathMusic(void) {
+    return m_path;
 }
 
 musicWidget::~musicWidget()
@@ -61,13 +87,13 @@ musicWidget::~musicWidget()
     delete ui;
 }
 
-void musicWidget::mousePressEvent(QMouseEvent* event) {
+//void musicWidget::mousePressEvent(QMouseEvent* event) {
 
-   if (event->button() == Qt::LeftButton)
-        emit clicked();
-   if (event->button() == Qt::RightButton)
-        emit rightClicked();
-}
+////   if (event->button() == Qt::LeftButton)
+////        emit clicked();
+////   else if (event->button() == Qt::RightButton)
+////        emit rightClicked();
+//}
 
 void musicWidget::paintEvent(QPaintEvent *)
 {
@@ -99,6 +125,14 @@ bool musicWidget::eventFilter(QObject *obj, QEvent *event)
 //                    } else{
 //                return false;
         }
+//        else if (event->type() == QEvent::MouseButtonPress && static_cast<QMouseEvent*>(event)->button() == Qt::RightButton) {
+//            emit rightClicked();
+//            return true;
+//        }
+//        else if (event->type() == QEvent::MouseButtonRelease) {
+//            return true;
+//        }
+//        if (event->type() == QEvent::customContextMenuRequested)
     } else {
         // pass the event on to the parent class
         return eventFilter(obj, event);

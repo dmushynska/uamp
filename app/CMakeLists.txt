@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.18.2)
 set(CMAKE_CXX_STANDARD 17)
 set(NAME uamp)
 set(SOURCE_EXE main.cpp dtagmusic.cpp generalwindow.cpp
-    musicwidget.cpp musiclist.cpp playmusic.cpp)
+    musicwidget.cpp musiclist.cpp playmusic.cpp windowsetting.cpp)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)

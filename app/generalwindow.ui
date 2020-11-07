@@ -33,6 +33,20 @@
      <height>22</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menu_Queue">
+    <property name="title">
+     <string>&amp;Queue</string>
+    </property>
+    <addaction name="action_Add_music_to_Queue"/>
+   </widget>
+   <widget class="QMenu" name="menu_Settings">
+    <property name="title">
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="action_Setting"/>
+   </widget>
+   <addaction name="menu_Queue"/>
+   <addaction name="menu_Settings"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -41,8 +55,20 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="action_Add_music_to_Queue"/>
+   <addaction name="action_Setting"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="action_Add_music_to_Queue">
+   <property name="text">
+    <string>&amp;Add music to Queue</string>
+   </property>
+  </action>
+  <action name="action_Setting">
+   <property name="text">
+    <string>&amp;Setting</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
