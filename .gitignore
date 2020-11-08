@@ -33,6 +33,7 @@
 
 #user ignor
 build*
+!build.sh
 .DS_Store
 uamp*
 *.autosave

@@ -2,6 +2,7 @@
 #define WINDOWSETTING_H
 
 #include <QDialog>
+#include <QCloseEvent>
 
 namespace Ui {
 class WindowSetting;
@@ -15,8 +16,38 @@ public:
     explicit WindowSetting(QWidget *parent = nullptr);
     ~WindowSetting();
 
+    enum class Sort {
+        user,
+        artist,
+        title,
+        album,
+        genre
+    };
+    enum class nextMusic {
+        onePlay,
+        loopQueue,
+        repeatSong,
+        randomMusic
+    };
+    WindowSetting::nextMusic getTypeNext();
+
+signals:
+    void dialogClosed();
+
+private slots:
+    void closeEvent(QCloseEvent *event)
+    {
+    emit dialogClosed();
+        event->accept();
+    }
+    void on_pushButton_Save_clicked();
+
+    void on_pushButton_Cancel_clicked();
+
 private:
     Ui::WindowSetting *ui;
+    Sort m_TypeSort;
+    nextMusic m_TypeNextMusic;
 };
 
 #endif // WINDOWSETTING_H

@@ -22,7 +22,7 @@ class generalWindow : public QMainWindow
 public:
     explicit generalWindow(QWidget *parent = nullptr);
     ~generalWindow();
-    void nextMusic (void);
+    void nextMusic (bool isButton);
     void previousMusic (void);
     void playMusic (const QString& name, const QString& path);
     void resetObjectName(void);

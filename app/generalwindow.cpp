@@ -4,6 +4,7 @@
 #include "ui_generalwindow.h"
 #include "musiclist.h"
 #include "dtagmusic.h"
+#include <ctime>
 
 
 
@@ -11,6 +12,7 @@ generalWindow::generalWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::generalWindow)
 {
+    srand(static_cast<unsigned int>(time(0)));
     ui->setupUi(this);
     this->setWindowFlags(Qt::Window);
     m_playMusic = new PlayMusic(this);
@@ -47,8 +49,20 @@ void generalWindow::playMusic (const QString& name, const QString& path) {
     this->m_playMusic->setNewMusicAndPlay(name, path);
 }
 
-void generalWindow::nextMusic (void) {
-    m_MusicList->nextMusic();
+void generalWindow::nextMusic (bool isButton) {
+    if (isButton) {
+        m_MusicList->nextMusic();
+        return;
+    }
+    WindowSetting::nextMusic type = this->m_WindowSetting->getTypeNext();
+    if (type == WindowSetting::nextMusic::loopQueue)
+        m_MusicList->nextMusic();
+    else if (type == WindowSetting::nextMusic::repeatSong)
+        m_playMusic->play();
+    else if (type == WindowSetting::nextMusic::onePlay)
+        return;
+    else if (type == WindowSetting::nextMusic::randomMusic)
+        m_MusicList->playRandom();
 }
 
 void generalWindow::cleanListMusic(void) {

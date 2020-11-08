@@ -88,7 +88,7 @@ void PlayMusic::stateChanged(QMediaPlayer::State state) {
             ui->sliderMusic->setValue(0);
         else {
             ui->sliderMusic->setValue(100);
-            m_window->nextMusic();
+            m_window->nextMusic(false);
         }
     }
     if (state == QMediaPlayer::PlayingState) {
@@ -156,5 +156,5 @@ void PlayMusic::on_ButtonFastForward_clicked()
 
 void PlayMusic::on_ButtonNext_clicked()
 {
-    m_window->nextMusic();
+    m_window->nextMusic(true);
 }

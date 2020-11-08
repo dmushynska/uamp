@@ -34,6 +34,7 @@ public:
     bool eventFilter(QObject *obj, QEvent *event);
     void clickDubleWidget(void);
     void fileChanged(const QString &path);
+
 signals:
     void clicked();
     void rightClicked();

@@ -20,6 +20,10 @@ public:
 
     void setNewMusic(const QString& name, const QString& path);
     void setNewMusicAndPlay(const QString& name, const QString& path);
+    void play(void) {
+        on_ButtonPlay_clicked();
+    }
+
 private:
     QString getTime(qint64 time);
     void setTimeMusic(qint64 valueTile, qint64 maxTime);

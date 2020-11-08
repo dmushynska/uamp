@@ -4,6 +4,8 @@
 #include "generalwindow.h"
 #include <QMenu>
 #include <QFileDialog>
+#include <taglib/tag.h>
+#include <taglib/fileref.h>
 
 MusicList::MusicList(QWidget *parent) :
     QWidget(parent),
@@ -26,6 +28,13 @@ MusicList::MusicList(QWidget *parent) :
 //        rightMenu.show();
 //        rightMenu.exec(QCursor::pos());
 //    });
+}
+
+void MusicList::playRandom(void) {
+    if (this->ui->layaoutPlayMusicList->count() != 1) {
+        int pos = (rand() % (this->ui->layaoutPlayMusicList->count() - 1));
+        qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(pos)->widget())->clickDubleWidget();
+    }
 }
 
 void MusicList::customContextMenuRequested(const QPoint &pos) {
@@ -115,6 +124,54 @@ void MusicList::addNewMusic(const QString& path) {
         ui->layaoutPlayMusicList->insertWidget(ui->layaoutPlayMusicList->count() - 1, newMusic);
     }
 }
+
+void MusicList::insertWindgetPos(musicWidget *newMusic, WindowSetting::Sort type) {
+    if (type == WindowSetting::Sort::user) {
+        ui->layaoutPlayMusicList->insertWidget(ui->layaoutPlayMusicList->count() - 1, newMusic);
+        return;
+    }
+    TagLib::FileRef newFile(newMusic->getPathMusic().toUtf8().constData());
+    for (int i = 0; i < ui->layaoutPlayMusicList->count() - 1; i++) {
+        TagLib::FileRef f(qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(ui->layaoutPlayMusicList->count() - 2)->widget())->getPathMusic().toUtf8().constData());
+        switch (type) {
+            case WindowSetting::Sort::album:
+                if (newFile.tag()->album().toCString() < f.tag()->artist().toCString()) {
+                    ui->layaoutPlayMusicList->insertWidget(i, newMusic);
+                    return;
+                }
+                break;
+            case WindowSetting::Sort::artist:
+                if (newFile.tag()->artist().toCString() < f.tag()->artist().toCString()) {
+                    ui->layaoutPlayMusicList->insertWidget(i, newMusic);
+                    return;
+                }
+                break;
+            case WindowSetting::Sort::title:
+                if (newFile.tag()->title().toCString() < f.tag()->artist().toCString()) {
+                    ui->layaoutPlayMusicList->insertWidget(i, newMusic);
+                    return;
+                }
+                break;
+            case WindowSetting::Sort::genre:
+                if (newFile.tag()->genre().toCString() < f.tag()->artist().toCString()) {
+                    ui->layaoutPlayMusicList->insertWidget(i, newMusic);
+                    return;
+                }
+                break;
+            case WindowSetting::Sort::user:
+                return;
+        }
+//        if (ui->layaoutPlayMusicList->itemAt(i)->widget()->objectName() == "Play") {
+//            if (i == 0) {
+//                qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(ui->layaoutPlayMusicList->count() - 2)->widget())->clickDubleWidget();
+//            }
+//            else {
+//                qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(--i)->widget())->clickDubleWidget();
+//            }
+//            return;
+     }
+}
+
 
 MusicList::~MusicList()
 {
