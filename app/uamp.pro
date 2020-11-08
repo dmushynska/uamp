@@ -31,6 +31,14 @@ SOURCES += \
     musiclist.cpp \
     musicwidget.cpp \
     dtagmusic.cpp \
+    windowsetting.cpp \
+    dtagmusic.cpp \
+    generalwindow.cpp \
+    main.cpp \
+    musiclist.cpp \
+    musicwidget.cpp \
+    playlist.cpp \
+    playmusic.cpp \
     windowsetting.cpp
 
 HEADERS += \
@@ -39,6 +47,15 @@ HEADERS += \
     musiclist.h \
     musicwidget.h \
     dtagmusic.h \
+    windowsetting.h \
+    database.h \
+    dtagmusic.h \
+    generalwindow.h \
+    musiclist.h \
+    musicwidget.h \
+    mytreewidgetitem.h \
+    playlist.h \
+    playmusic.h \
     windowsetting.h
 
 FORMS += \
@@ -47,6 +64,12 @@ FORMS += \
     musiclist.ui \
     musicwidget.ui \
     dtagmusic.ui \
+    windowsetting.ui \
+    dtagmusic.ui \
+    generalwindow.ui \
+    musicwidget.ui \
+    playlist.ui \
+    playmusic.ui \
     windowsetting.ui
 
 # Default rules for deployment.

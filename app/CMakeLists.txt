@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.18.2)
 set(CMAKE_CXX_STANDARD 17)
 set(NAME uamp)
 set(SOURCE_EXE main.cpp dtagmusic.cpp generalwindow.cpp
-    musicwidget.cpp musiclist.cpp playmusic.cpp windowsetting.cpp)
+    musicwidget.cpp musiclist.cpp playmusic.cpp windowsetting.cpp playlist.cpp mytreewidgetitem.h)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -26,6 +26,7 @@ endif()
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt5Multimedia REQUIRED)
+find_package(Qt5 REQUIRED COMPONENTS Core Quick Sql)
 
 include_directories(
     ./src
@@ -57,4 +58,4 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../../)
 add_executable(${NAME} ${SOURCE_EXE})
 
 
-target_link_libraries(${NAME} tag Qt5::Widgets Qt5::Multimedia)
+target_link_libraries(${NAME} tag Qt5::Widgets Qt5::Multimedia Qt5::Core Qt5::Quick Qt5::Sql )
