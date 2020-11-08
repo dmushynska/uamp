@@ -5,6 +5,9 @@
 
 #include <iostream>
 #include <QVector>
+#include <QFileInfo>
+#include <taglib/tag.h>
+#include <taglib/fileref.h>
 
 class MusicList;
 class DTagMusic;
@@ -29,6 +32,16 @@ public:
     void showEditTagMusic(const QString& path);
     void cleanListMusic(void);
     void addNewMusicToQueue(const QString& path);
+    QString GetFileName(const QString &path) {
+        TagLib::FileRef f(path.toUtf8().constData());
+        if (f.isNull()) {
+            QFile file(path);
+            QFileInfo fileInfo(file.fileName());
+            QString filename(fileInfo.fileName());
+            return filename;
+        }
+        return f.tag()->title().toCString();
+    }
 
 private slots:
 

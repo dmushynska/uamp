@@ -1,20 +1,21 @@
 #pragma once
-#include "mytreewidgetitem.h"
+#include <QBuffer>
 #include <QDebug>
+#include <QDir>
 #include <QPushButton>
-#include <QStandardItemModel>
 #include <QSqlDatabase>
 #include <QSqlQuery>
-#include <QDir>
 #include <QSqlQueryModel>
+#include <QStandardItemModel>
 #include <QTreeWidget>
-#include <QBuffer>
 
+#include "generalwindow.h"
+#include "mytreewidgetitem.h"
 
 class DataBase {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-public:
 
+public:
     explicit DataBase() {
         db.setDatabaseName("myDb.db");
         db.open();
@@ -24,27 +25,34 @@ public:
         db.close();
     }
 
-    void addTrack(QString path, QTreeWidgetItem *topLevelItem) {
-        MyTreeWidgetItem *widgetitem = new MyTreeWidgetItem(topLevelItem, "name", path);
-        widgetitem->setText(0, "name");
+    void addTrack(QString path, QTreeWidgetItem *topLevelItem, generalWindow *m_main) {
+        QString name = m_main->GetFileName(path);
+        MyTreeWidgetItem *widgetitem = new MyTreeWidgetItem(topLevelItem, name, path);
+        widgetitem->setText(0, name);
     }
 
-    void addPlaylist(QTreeWidget *treeWidget, QString name, int id) {
+    void addPlaylist(QTreeWidget *treeWidget, QString name, int id, generalWindow *m_main) {
         QSqlQuery query;
-        query.exec("select Path from Tracks where NumbTrack in (select NumbTrack from TrackPlaylists where NumbPlaylist =  " + QString::number(id) + ");");
-        QTreeWidgetItem *topLevelItem = new QTreeWidgetItem(treeWidget);
+        saveImage(name);
+        MyTreeWidgetItem *topLevelItem;
+        if (QFile::exists(name + ".png")) {
+            topLevelItem = new MyTreeWidgetItem(treeWidget, name, name);
+        } else {
+            topLevelItem = new MyTreeWidgetItem(treeWidget, name, nullptr);
+        }
         treeWidget->addTopLevelItem(topLevelItem);
         topLevelItem->setText(0, name);
-        while(query.next()) {
-                addTrack(query.value(0).toString(), topLevelItem);
+        query.exec("select Path from Tracks where NumbTrack in (select NumbTrack from TrackPlaylists where NumbPlaylist =  " + QString::number(id) + ");");
+        while (query.next()) {
+            addTrack(query.value(0).toString(), topLevelItem, m_main);
         }
     }
 
-    void selectPlaylistFromDataBase(QTreeWidget *treeWidget) {
+    void selectPlaylistFromDataBase(QTreeWidget *treeWidget, generalWindow *m_main) {
         QSqlQuery query;
         query.exec("select Name, NumbPlaylist from Playlists");
         while (query.next()) {
-            addPlaylist(treeWidget, query.value(0).toString(), query.value(1).toInt());
+            addPlaylist(treeWidget, query.value(0).toString(), query.value(1).toInt(), m_main);
         }
     }
 
@@ -64,8 +72,9 @@ public:
 
     int addToPlaylists(QString name) {
         QSqlQuery query;
-        query.prepare("INSERT INTO Playlists (Name) "
-                            "VALUES (:Name)");
+        query.prepare(
+            "INSERT INTO Playlists (Name) "
+            "VALUES (:Name)");
         query.bindValue(":Name", name);
         bool exec = query.exec();
         if (exec == 0)
@@ -75,15 +84,16 @@ public:
 
     int addToTracks(QString path) {
         QSqlQuery query;
-           query.prepare("INSERT INTO Tracks(Path, Stars, Rating) "
-                  "VALUES (:Path, :Stars, :Rating)");
-           query.bindValue(":Path", path);
-           query.bindValue(":Stars", 0);
-           query.bindValue(":Rating", 0);
-           query.exec();
-           query.exec("select NumbTrack from Tracks where Path = '" + path + "';");
-           query.first();
-           return query.value(0).toInt();
+        query.prepare(
+            "INSERT INTO Tracks(Path, Stars, Rating) "
+            "VALUES (:Path, :Stars, :Rating)");
+        query.bindValue(":Path", path);
+        query.bindValue(":Stars", 0);
+        query.bindValue(":Rating", 0);
+        query.exec();
+        query.exec("select NumbTrack from Tracks where Path = '" + path + "';");
+        query.first();
+        return query.value(0).toInt();
     }
 
     void deleteTrack(QString path) {
@@ -95,8 +105,9 @@ public:
 
     bool addToTrackPlaylists(int track, int playlist) {
         QSqlQuery query;
-        query.prepare("INSERT INTO TrackPlaylists(NumbTrack, NumbPlaylist) "
-               "VALUES (:NumbTrack, :NumbPlaylist)");
+        query.prepare(
+            "INSERT INTO TrackPlaylists(NumbTrack, NumbPlaylist) "
+            "VALUES (:NumbTrack, :NumbPlaylist)");
         query.bindValue(":NumbTrack", track);
         query.bindValue(":NumbPlaylist", playlist);
         return query.exec();
@@ -104,7 +115,7 @@ public:
 
     void deletePlaylists(QString name) {
         QSqlQuery query;
-//        qDebug() << name;
+        //        qDebug() << name;
         qDebug() << query.exec("select NumbPlaylist from Playlists where Name = '" + name + "';");
         query.first();
         QString string = query.value(0).toString();
@@ -114,28 +125,35 @@ public:
 
     bool renamePlaylist(QString string, QString newName) {
         QSqlQuery query;
-        return  query.exec("UPDATE Playlists SET Name = '"+ newName +"' WHERE Name ='" + string + "';");
+        return query.exec("UPDATE Playlists SET Name = '" + newName + "' WHERE Name ='" + string + "';");
     }
 
-//     void insertImage(QPixmap image, QString name) {
-//         QSqlQuery query;
-//         QByteArray inByteArray;
-//         QBuffer inBuffer( &inByteArray );
-//         inBuffer.open( QIODevice::WriteOnly );
-//         image.save( &inBuffer, "PNG" );
-//         query.prepare("UPDATE Playlists (IMAGES) "
-//                       "VALUES (:IMAGES) where Name = '" + name + "';");
-//                 query.bindValue(":IMAGES", inByteArray);
-//         qDebug() << "photo " <<  query.exec();
-//     }
+    void insertImage(QString name, QString filename) {
+        QFile file(filename);
+        file.open(QIODevice::ReadOnly);
+        QByteArray ba = file.readAll();
+        QSqlQuery query;
+        query.prepare("UPDATE Playlists SET IMAGES = :image WHERE Name = :name;");
+        query.bindValue(":image", ba, QSql::InOut | QSql::Binary);
+        query.bindValue(":name", name);
+        qDebug() << "photo " << query.exec();
+        file.close();
+    }
 
-//     QByteArray GetImage(QString name) {
-//         QSqlQuery query;
-//         query.exec("select IMAGES from Playlists where Name = '" + name + "';");
-//         query.first();
-//         return query.value(0).toByteArray();
-// //        QImage image = QImage();
-// //        image.loadFromData(outByteArray);
-// //        return  image;
-//     }
+    QByteArray GetImage(QString name) {
+        QSqlQuery query;
+        qDebug() << query.exec("select IMAGES from Playlists where Name = '" + name + "';");
+        query.first();
+        return query.value(0).toByteArray();
+    }
+
+    void saveImage(QString filename) {
+        QByteArray mass = GetImage(filename);
+        QPixmap pixmap = QPixmap();
+        pixmap.loadFromData(mass);
+        QFile file(filename + ".png");
+        QBuffer buffer(&mass);
+        buffer.open(QIODevice::WriteOnly);
+        pixmap.save(&file, "PNG");
+    }
 };
