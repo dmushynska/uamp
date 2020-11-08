@@ -32,7 +32,7 @@
       <enum>Qt::WheelFocus</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -119,7 +119,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="Playlists">
+     <widget class="QWidget" name="Playlists_3">
       <attribute name="title">
        <string>Playlists</string>
       </attribute>
@@ -133,6 +133,9 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
+       <item>
+        <layout class="QVBoxLayout" name="Playlists"/>
+       </item>
       </layout>
      </widget>
     </widget>

@@ -6,6 +6,8 @@
 #include <QFileDialog>
 #include <taglib/tag.h>
 #include <taglib/fileref.h>
+#include "playlist.h"
+
 
 MusicList::MusicList(QWidget *parent) :
     QWidget(parent),
@@ -15,6 +17,7 @@ MusicList::MusicList(QWidget *parent) :
     m_main = qobject_cast<generalWindow*>(parent);
     ui->tab->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->tab, &QWidget::customContextMenuRequested, this, &MusicList::customContextMenuRequested);
+    ui->Playlists->addWidget(new Playlist(m_main));
 //    {
 //        QMenu rightMenu;
 //        rightMenu.addAction("Add new music", this, [this] {
