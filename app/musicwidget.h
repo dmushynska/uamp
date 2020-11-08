@@ -40,8 +40,6 @@ signals:
     void rightClicked();
     void dubleClick();
 
-//protected:
-//    void mousePressEvent(QMouseEvent* event);
 
 private:
     Ui::musicWidget *ui;

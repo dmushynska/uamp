@@ -9,10 +9,6 @@
 
 class MusicList;
 class DTagMusic;
-//class WindowSetting {
-//public:
-//    enum class Sort;
-//};
 class PlayMusic;
 
 namespace Ui {
