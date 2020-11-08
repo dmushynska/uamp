@@ -8,19 +8,27 @@
 #include "ui_playlist.h"
 
 void Playlist::clicked() {
-    if(ui->treeWidget->currentItem()->parent() != nullptr) {
-        MyTreeWidgetItem * my = dynamic_cast<MyTreeWidgetItem *>( ui->treeWidget->currentItem()->parent());
-        if (my->GetPath() != nullptr) {ui->treeWidget->setStyleSheet("background-image:url(" + my->GetPath() + ".png)");}
-        else {
+    if (ui->treeWidget->currentItem()->parent() != nullptr) {
+        MyTreeWidgetItem *my = dynamic_cast<MyTreeWidgetItem *>(ui->treeWidget->currentItem()->parent());
+        if (my->GetPath() != nullptr) {
+            ui->treeWidget->setStyleSheet("background-image:url(" + my->GetPath() + ".png)");
+        } else {
+            ui->treeWidget->setStyleSheet("background-image:none;");
+        }
+    } else {
+        MyTreeWidgetItem *my = dynamic_cast<MyTreeWidgetItem *>(ui->treeWidget->currentItem());
+        if (my->GetPath() != nullptr) {
+            ui->treeWidget->setStyleSheet("background-image:url(" + my->GetPath() + ".png)");
+        } else {
             ui->treeWidget->setStyleSheet("background-image:none;");
         }
     }
-    else  {
-        MyTreeWidgetItem * my = dynamic_cast<MyTreeWidgetItem *>( ui->treeWidget->currentItem());
-        if (my->GetPath() != nullptr) {ui->treeWidget->setStyleSheet("background-image:url(" + my->GetPath() + ".png)");}
-                else {
-            ui->treeWidget->setStyleSheet("background-image:none;");
-        }
+}
+
+void addToQueue(QTreeWidget *treeWidget, generalWindow *m_main) {
+    for (int j = 0; j < treeWidget->currentItem()->childCount(); j++) {
+        MyTreeWidgetItem *my = dynamic_cast<MyTreeWidgetItem *>(treeWidget->currentItem()->child(j));
+        m_main->addNewMusicToQueue(my->GetPath());
     }
 }
 
@@ -33,11 +41,10 @@ void Playlist::clickMouse(const QPoint &point) {
             m_db.deleteTrack(ui->treeWidget->currentItem()->text(0));
             ui->treeWidget->itemAt(point)->~QTreeWidgetItem();
         });
-        // Функции Серёги
+
         MyTreeWidgetItem *item = dynamic_cast<MyTreeWidgetItem *>(ui->treeWidget->currentItem());
         myMenu.addAction("change tags", this, [this, item]() {
             m_main->showEditTagMusic(item->GetPath());
-            //    qDebug() << "change tags";
         });
 
         myMenu.addAction("add track to play", this, [this, item]() {
@@ -58,17 +65,23 @@ void Playlist::clickMouse(const QPoint &point) {
 
         myMenu.addAction("add photo to " + ui->treeWidget->currentItem()->text(0), this, [this]() {
             QString photo = QFileDialog::getOpenFileName(
-                            this,
-                            tr("Open Track"),
-                            "/home",
-                            tr("Photo-Files(*.png)"));
+                this,
+                tr("Open Track"),
+                "/home",
+                tr("Photo-Files(*.png)"));
             if (photo != nullptr) {
-                MyTreeWidgetItem * my = dynamic_cast<MyTreeWidgetItem *>( ui->treeWidget->currentItem());
+                MyTreeWidgetItem *my = dynamic_cast<MyTreeWidgetItem *>(ui->treeWidget->currentItem());
                 my->SetPath(ui->treeWidget->currentItem()->text(0));
                 m_db.insertImage(ui->treeWidget->currentItem()->text(0), photo);
                 m_db.saveImage(ui->treeWidget->currentItem()->text(0));
                 clicked();
             }
+        });
+        myMenu.addAction("delete photo from " + ui->treeWidget->currentItem()->text(0), this, [this]() {
+            m_db.deleteImage(ui->treeWidget->currentItem()->text(0));
+            MyTreeWidgetItem *my = dynamic_cast<MyTreeWidgetItem *>(ui->treeWidget->currentItem());
+            my->SetPath(nullptr);
+            ui->treeWidget->setStyleSheet("background-image:none;");
         });
 
         myMenu.addAction("add track to " + ui->treeWidget->currentItem()->text(0), this, [this]() {
@@ -93,14 +106,15 @@ void Playlist::clickMouse(const QPoint &point) {
                     m_db.addPlaylist(ui->treeWidget, "New Playlist", m_db.NumbPlaylist("New Playlist"), m_main);
             }
         });
-        // Функции Серёги
-        //        myMenu.addAction("play", this, []() {
-        //            qDebug() << "play";
-        //        });
 
-        //        myMenu.addAction("add playlist to play", this, []() {
-        //            qDebug() << "add playlist to play";
-        //        });
+        myMenu.addAction("play", this, [this]() {
+            m_main->cleanListMusic();
+            addToQueue(ui->treeWidget, m_main);
+        });
+
+        myMenu.addAction("add playlist to play", this, [this]() {
+            addToQueue(ui->treeWidget, m_main);
+        });
 
         myMenu.addAction("rename playlist " + ui->treeWidget->currentItem()->text(0), this, [this]() {
             QString defaultText("new name");

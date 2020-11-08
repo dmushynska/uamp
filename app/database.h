@@ -156,4 +156,8 @@ public:
         buffer.open(QIODevice::WriteOnly);
         pixmap.save(&file, "PNG");
     }
+    void deleteImage(QString name) {
+        QSqlQuery query;
+        qDebug() << "delete photo" << query.exec("delete IMAGES from Playlists where Name = '" + name + "';");
+    }
 };

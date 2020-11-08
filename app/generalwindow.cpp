@@ -1,17 +1,26 @@
-#include "playmusic.h"
-#include "windowsetting.h"
 #include "generalwindow.h"
-#include "ui_generalwindow.h"
-#include "musiclist.h"
-#include "dtagmusic.h"
+
 #include <ctime>
 
+#include "dtagmusic.h"
+#include "musiclist.h"
+#include "playmusic.h"
+#include "ui_generalwindow.h"
+#include "windowsetting.h"
 
+QString generalWindow::GetFileName(const QString& path) {
+    TagLib::FileRef f(path.toUtf8().constData());
+    if (QString(f.tag()->title().toCString()).size() == 0) {
+        QFile file(path);
+        QFileInfo fileInfo(file.fileName());
+        QString filename(fileInfo.fileName());
+        return filename;
+    }
+    return f.tag()->title().toCString();
+}
 
-generalWindow::generalWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::generalWindow)
-{
+generalWindow::generalWindow(QWidget* parent) : QMainWindow(parent),
+                                                ui(new Ui::generalWindow) {
     srand(static_cast<unsigned int>(time(0)));
     ui->setupUi(this);
     this->setWindowFlags(Qt::Window);
@@ -23,8 +32,7 @@ generalWindow::generalWindow(QWidget *parent) :
     m_WindowSetting = new WindowSetting(this);
 }
 
-generalWindow::~generalWindow()
-{
+generalWindow::~generalWindow() {
     delete ui;
     delete m_playMusic;
     delete m_MusicList;
@@ -35,7 +43,6 @@ generalWindow::~generalWindow()
 void generalWindow::setSort(WindowSetting::Sort type) {
     this->m_MusicList->chengeTypeSort(type);
 }
-
 
 WindowSetting::Sort generalWindow::getSortType(void) {
     return m_WindowSetting->getTypeSort();
@@ -53,11 +60,11 @@ void generalWindow::resetObjectName(void) {
     this->m_MusicList->resetObjectName();
 }
 
-void generalWindow::playMusic (const QString& name, const QString& path) {
+void generalWindow::playMusic(const QString& name, const QString& path) {
     this->m_playMusic->setNewMusicAndPlay(name, path);
 }
 
-void generalWindow::nextMusic (bool isButton) {
+void generalWindow::nextMusic(bool isButton) {
     if (isButton) {
         m_MusicList->nextMusic();
         return;
@@ -77,25 +84,22 @@ void generalWindow::cleanListMusic(void) {
     m_MusicList->cleanList();
 }
 
-void generalWindow::previousMusic (void) {
-//    m_MusicList->cleanList();
+void generalWindow::previousMusic(void) {
+    //    m_MusicList->cleanList();
     m_MusicList->previousMusic();
 }
 
 #include <QDir>
 #include <QFileDialog>
 
-
-void generalWindow::on_action_Add_music_to_Queue_triggered()
-{
+void generalWindow::on_action_Add_music_to_Queue_triggered() {
     QString path = QFileDialog::getOpenFileName(this, tr("Open Track"), QDir::currentPath(),
-                               tr("Audio-Files(*.mp3 *.wav *.mp4 *.flac)"));
+                                                tr("Audio-Files(*.mp3 *.wav *.mp4 *.flac)"));
     if (path.size()) {
         this->addNewMusicToQueue(path);
     }
 }
 
-void generalWindow::on_action_Setting_triggered()
-{
+void generalWindow::on_action_Setting_triggered() {
     m_WindowSetting->show();
 }
