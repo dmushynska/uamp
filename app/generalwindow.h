@@ -5,10 +5,14 @@
 
 #include <iostream>
 #include <QVector>
+#include "windowsetting.h"
 
 class MusicList;
 class DTagMusic;
-class WindowSetting;
+//class WindowSetting {
+//public:
+//    enum class Sort;
+//};
 class PlayMusic;
 
 namespace Ui {
@@ -29,6 +33,8 @@ public:
     void showEditTagMusic(const QString& path);
     void cleanListMusic(void);
     void addNewMusicToQueue(const QString& path);
+    WindowSetting::Sort getSortType(void);
+    void setSort(WindowSetting::Sort type);
 
 private slots:
 

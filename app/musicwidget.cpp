@@ -75,7 +75,7 @@ void musicWidget::fileChanged(const QString &path) {
     TagLib::FileRef f(path.toUtf8().constData());
     ui->Artist->setText(f.tag()->artist().toCString());
     ui->nameMusic->setText(f.tag()->title().toCString());
-    qDebug() << path;
+    m_main->setSort(this->m_main->getSortType());
 }
 
 QString musicWidget::getPathMusic(void) {
