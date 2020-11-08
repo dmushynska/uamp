@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QCheckBox>
 #include <QtDebug>
+#include <QFile>
 
 DTagMusic::DTagMusic(QWidget *parent) :
     QDialog(parent),
@@ -75,13 +76,21 @@ void DTagMusic::setTagWindow(const QString& path) {
 
 void DTagMusic::saveChengeTag(void) {
     if (ui->m_check_box->isChecked()) {
-        TagLib::FileRef f(ui->m_Path->text().toUtf8().constData());
-
-        f.tag()->setArtist(ui->m_artist->text().toUtf8().data());
-        f.tag()->setAlbum(ui->m_Albom->text().toUtf8().data());
-        f.tag()->setGenre(ui->m_Genre->text().toUtf8().data());
-        f.tag()->setTitle(ui->m_Title->text().toUtf8().data());
-        f.save();
+        QFile file(ui->m_Path->text());
+        if (!file.open(QIODevice::WriteOnly)) {
+                QMessageBox messageBox;
+                messageBox.critical(this,"Error","PErmision ERROR!");
+                messageBox.setFixedSize(500,200);
+        }
+        else {
+            TagLib::FileRef f(ui->m_Path->text().toUtf8().constData());
+            f.tag()->setArtist(ui->m_artist->text().toUtf8().data());
+            f.tag()->setAlbum(ui->m_Albom->text().toUtf8().data());
+            f.tag()->setGenre(ui->m_Genre->text().toUtf8().data());
+            f.tag()->setTitle(ui->m_Title->text().toUtf8().data());
+            f.save();
+        }
+        file.close();
     }
 }
 

@@ -8,10 +8,11 @@
 #include <QFileInfo>
 #include <taglib/tag.h>
 #include <taglib/fileref.h>
+#include "windowsetting.h"
+
 
 class MusicList;
 class DTagMusic;
-class WindowSetting;
 class PlayMusic;
 
 namespace Ui {
@@ -32,6 +33,7 @@ public:
     void showEditTagMusic(const QString& path);
     void cleanListMusic(void);
     void addNewMusicToQueue(const QString& path);
+<<<<<<< HEAD
     QString GetFileName(const QString &path) {
         TagLib::FileRef f(path.toUtf8().constData());
         if (f.isNull()) {
@@ -42,6 +44,10 @@ public:
         }
         return f.tag()->title().toCString();
     }
+=======
+    WindowSetting::Sort getSortType(void);
+    void setSort(WindowSetting::Sort type);
+>>>>>>> Serhii
 
 private slots:
 

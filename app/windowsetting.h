@@ -8,6 +8,8 @@ namespace Ui {
 class WindowSetting;
 }
 
+class generalWindow;
+
 class WindowSetting : public QDialog
 {
     Q_OBJECT
@@ -30,6 +32,7 @@ public:
         randomMusic
     };
     WindowSetting::nextMusic getTypeNext();
+    WindowSetting::Sort getTypeSort(void);
 
 signals:
     void dialogClosed();
@@ -46,6 +49,7 @@ private slots:
 
 private:
     Ui::WindowSetting *ui;
+    generalWindow *m_main;
     Sort m_TypeSort;
     nextMusic m_TypeNextMusic;
 };

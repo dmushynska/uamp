@@ -26,7 +26,8 @@ public:
     void addNewMusic(const QString& path);
     void customContextMenuRequested(const QPoint &pos);
     void playRandom(void);
-//    int getMax
+    void chengeTypeSort(WindowSetting::Sort type);
+
 private:
     void insertWindgetPos(musicWidget *newMusic, WindowSetting::Sort type);
 

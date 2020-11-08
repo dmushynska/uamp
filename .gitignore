@@ -38,4 +38,4 @@ build*
 uamp*
 *.autosave
 *.db
-
+*.png*
