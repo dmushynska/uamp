@@ -7,6 +7,7 @@ class MyTreeWidgetItem : public QObject, public QTreeWidgetItem {
     QString Path = "/Users/dmushynska/Desktop/eldzhey-morgenshtern_-_lollipop.mp3";
 public:
     explicit MyTreeWidgetItem(QTreeWidgetItem *parent, QString name, QString path) : QTreeWidgetItem(parent), Name(name), Path(path) {}
+    MyTreeWidgetItem(QTreeWidget *parent, QString name, QString path) : QTreeWidgetItem(parent), Name(name), Path(path) {}
     ~MyTreeWidgetItem() = default;
 
     void SetName(QString name) {
@@ -15,7 +16,11 @@ public:
     QString GetName() {
         return Name;
     }
+    void SetPath(QString path) {
+        Path = path;
+    }
     QString GetPath() {
         return Path;
     }
+
 };

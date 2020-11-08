@@ -20,6 +20,7 @@ public:
     explicit Playlist(QWidget *parent = nullptr);
     ~Playlist();
     void clickMouse(const QPoint &point);
+    void clicked();
 
 private:
     Ui::Playlist *ui;
