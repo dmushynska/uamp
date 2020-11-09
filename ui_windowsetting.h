@@ -31,6 +31,9 @@ public:
     QComboBox *TypeSort;
     QLabel *label_2;
     QComboBox *TypePlay;
+    QComboBox *Times;
+    QPushButton *pushButtonStart;
+    QLabel *TimeToShotdown;
     QHBoxLayout *horizontalLayout_3;
     QPushButton *pushButton_Cancel;
     QPushButton *pushButton_Save;
@@ -90,8 +93,31 @@ public:
 
         formLayout->setWidget(1, QFormLayout::LabelRole, TypePlay);
 
+        Times = new QComboBox(WindowSetting);
+        Times->addItem(QString());
+        Times->addItem(QString());
+        Times->addItem(QString());
+        Times->addItem(QString());
+        Times->addItem(QString());
+        Times->setObjectName(QString::fromUtf8("Times"));
+        Times->setMinimumSize(QSize(170, 0));
+        Times->setMaximumSize(QSize(16777215, 170));
+
+        formLayout->setWidget(3, QFormLayout::LabelRole, Times);
+
+        pushButtonStart = new QPushButton(WindowSetting);
+        pushButtonStart->setObjectName(QString::fromUtf8("pushButtonStart"));
+
+        formLayout->setWidget(3, QFormLayout::FieldRole, pushButtonStart);
+
 
         verticalLayout->addLayout(formLayout);
+
+        TimeToShotdown = new QLabel(WindowSetting);
+        TimeToShotdown->setObjectName(QString::fromUtf8("TimeToShotdown"));
+        TimeToShotdown->setAlignment(Qt::AlignCenter);
+
+        verticalLayout->addWidget(TimeToShotdown);
 
         horizontalLayout_3 = new QHBoxLayout();
         horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
@@ -131,6 +157,14 @@ public:
         TypePlay->setItemText(2, QCoreApplication::translate("WindowSetting", "Repeat a single song", nullptr));
         TypePlay->setItemText(3, QCoreApplication::translate("WindowSetting", "Random music", nullptr));
 
+        Times->setItemText(0, QCoreApplication::translate("WindowSetting", "Off", nullptr));
+        Times->setItemText(1, QCoreApplication::translate("WindowSetting", "1 minute", nullptr));
+        Times->setItemText(2, QCoreApplication::translate("WindowSetting", "5 minutes", nullptr));
+        Times->setItemText(3, QCoreApplication::translate("WindowSetting", "10 minutes", nullptr));
+        Times->setItemText(4, QCoreApplication::translate("WindowSetting", "15 minutes", nullptr));
+
+        pushButtonStart->setText(QCoreApplication::translate("WindowSetting", "Shotdown Start", nullptr));
+        TimeToShotdown->setText(QCoreApplication::translate("WindowSetting", "Off", nullptr));
         pushButton_Cancel->setText(QCoreApplication::translate("WindowSetting", "Cancel", nullptr));
         pushButton_Save->setText(QCoreApplication::translate("WindowSetting", "Save", nullptr));
     } // retranslateUi

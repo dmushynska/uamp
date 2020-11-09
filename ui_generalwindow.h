@@ -137,11 +137,11 @@ public:
 #endif // QT_CONFIG(shortcut)
         action_Rewind->setText(QCoreApplication::translate("generalWindow", "&Rewind", nullptr));
 #if QT_CONFIG(shortcut)
-        action_Rewind->setShortcut(QCoreApplication::translate("generalWindow", "Right", nullptr));
+        action_Rewind->setShortcut(QCoreApplication::translate("generalWindow", "Left", nullptr));
 #endif // QT_CONFIG(shortcut)
         action_Fast_forwsrd->setText(QCoreApplication::translate("generalWindow", "&Fast forwsrd", nullptr));
 #if QT_CONFIG(shortcut)
-        action_Fast_forwsrd->setShortcut(QCoreApplication::translate("generalWindow", "Left", nullptr));
+        action_Fast_forwsrd->setShortcut(QCoreApplication::translate("generalWindow", "Right", nullptr));
 #endif // QT_CONFIG(shortcut)
         action_Play_Pause->setText(QCoreApplication::translate("generalWindow", "&Play/Pause", nullptr));
 #if QT_CONFIG(shortcut)

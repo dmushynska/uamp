@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QCloseEvent>
+#include <QTimer>
 
 namespace Ui {
 class WindowSetting;
@@ -33,6 +34,7 @@ public:
     };
     WindowSetting::nextMusic getTypeNext();
     WindowSetting::Sort getTypeSort(void);
+    void timeoutResetTimer(void);
 
 signals:
     void dialogClosed();
@@ -47,11 +49,15 @@ private slots:
 
     void on_pushButton_Cancel_clicked();
 
+    void on_pushButtonStart_clicked();
+
 private:
     Ui::WindowSetting *ui;
     generalWindow *m_main;
     Sort m_TypeSort;
     nextMusic m_TypeNextMusic;
+    QTimer m_time;
+    QTimer m_timeOf;
 };
 
 #endif // WINDOWSETTING_H
