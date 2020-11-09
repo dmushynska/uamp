@@ -67,20 +67,23 @@ void DTagMusic::checkBoxChenge() {
 
 void DTagMusic::setTagWindow(const QString& path) {
     ui->m_Path->setText(path);
-    TagLib::FileRef f(path.toUtf8().constData());
-    ui->m_artist->setText(f.tag()->artist().toCString());
-    ui->m_Albom->setText(f.tag()->album().toCString());
-    ui->m_Genre->setText(f.tag()->genre().toCString());
-    ui->m_Title->setText(f.tag()->title().toCString());
+    {
+        TagLib::FileRef f(path.toUtf8().constData());
+        ui->m_artist->setText(f.tag()->artist().toCString());
+        ui->m_Albom->setText(f.tag()->album().toCString());
+        ui->m_Genre->setText(f.tag()->genre().toCString());
+        ui->m_Title->setText(f.tag()->title().toCString());
+    }
 }
 
 void DTagMusic::saveChengeTag(void) {
     if (ui->m_check_box->isChecked()) {
         QFile file(ui->m_Path->text());
-        if (!file.open(QIODevice::WriteOnly)) {
-                QMessageBox messageBox;
-                messageBox.critical(this,"Error","PErmision ERROR!");
-                messageBox.setFixedSize(500,200);
+        file.open(QIODevice::ReadWrite);
+        if (!file.isWritable()) {
+            QMessageBox messageBox;
+            messageBox.critical(this,"Error","PErmision ERROR!");
+            messageBox.setFixedSize(500,200);
         }
         else {
             TagLib::FileRef f(ui->m_Path->text().toUtf8().constData());

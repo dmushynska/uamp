@@ -85,7 +85,6 @@ void generalWindow::cleanListMusic(void) {
 }
 
 void generalWindow::previousMusic(void) {
-    //    m_MusicList->cleanList();
     m_MusicList->previousMusic();
 }
 

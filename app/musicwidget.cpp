@@ -74,7 +74,9 @@ bool musicWidget::setMusic(const QString& path) {
     file.close();
     TagLib::FileRef f(path.toUtf8().constData());
     ui->Artist->setText(f.tag()->artist().toCString());
-    ui->nameMusic->setText(f.tag()->title().toCString());
+    ui->nameMusic->setText(m_main->GetFileName(path));
+    int time = f.file()->audioProperties()->lengthInSeconds();
+    ui->time->setText(QString::number(time / 60) + ":" + QString::number(time % 60));
     m_ChekFile.addPath(path);
     connect(&m_ChekFile, &QFileSystemWatcher::fileChanged, this, &musicWidget::fileChanged);
     m_path = path;
@@ -82,10 +84,18 @@ bool musicWidget::setMusic(const QString& path) {
 }
 
 void musicWidget::fileChanged(const QString &path) {
-    TagLib::FileRef f(path.toUtf8().constData());
-    ui->Artist->setText(f.tag()->artist().toCString());
-    ui->nameMusic->setText(f.tag()->title().toCString());
-    m_main->setSort(this->m_main->getSortType());
+    if (m_ChekFile.files().contains(path)) {
+        TagLib::FileRef f(path.toUtf8().constData());
+        ui->Artist->setText(f.tag()->artist().toCString());
+        ui->nameMusic->setText(m_main->GetFileName(path));
+        m_main->setSort(this->m_main->getSortType());
+    }
+    else {
+        QMessageBox messageBox;
+        messageBox.critical(this,"Info","Not found file " + path);
+        messageBox.setFixedSize(500,200);
+        this->~musicWidget();
+    }
 }
 
 QString musicWidget::getPathMusic(void) {
