@@ -34,6 +34,23 @@ PlayMusic::~PlayMusic()
     delete ui;
 }
 
+void PlayMusic::clickShortKeyPlay (void) {
+    if (this->ui->ButtonPlay->isHidden()) {
+        on_ButtonPause_clicked();
+    }
+    else {
+        on_ButtonPlay_clicked();
+    }
+}
+
+void PlayMusic::clickShortKeyRewind() {
+    on_ButtonRewind_clicked();
+}
+
+void PlayMusic::clickShortKeyFastForward() {
+    on_ButtonFastForward_clicked();
+}
+
 void PlayMusic::mediaStatusChanged(QMediaPlayer::MediaStatus status) {
     if (status == QMediaPlayer::LoadedMedia && this->m_playMusic)
         m_media->play();

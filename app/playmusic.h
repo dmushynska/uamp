@@ -23,6 +23,9 @@ public:
     void play(void) {
         on_ButtonPlay_clicked();
     }
+    void clickShortKeyPlay(void);
+    void clickShortKeyRewind(void);
+    void clickShortKeyFastForward(void);
 
 private:
     QString getTime(qint64 time);

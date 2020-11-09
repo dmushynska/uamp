@@ -42,6 +42,16 @@ private slots:
     void on_action_Setting_triggered();
     void on_action_Add_music_to_Queue_triggered();
 
+    void on_action_Next_triggered();
+
+    void on_action_Previous_triggered();
+
+    void on_action_Play_Pause_triggered();
+
+    void on_action_Rewind_triggered();
+
+    void on_action_Fast_forwsrd_triggered();
+
 private:
     Ui::generalWindow *ui;
     PlayMusic *m_playMusic;

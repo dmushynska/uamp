@@ -45,8 +45,20 @@
     </property>
     <addaction name="action_Setting"/>
    </widget>
+   <widget class="QMenu" name="menu_Player">
+    <property name="title">
+     <string>&amp;Player</string>
+    </property>
+    <addaction name="action_Stop"/>
+    <addaction name="action_Next"/>
+    <addaction name="action_Previous"/>
+    <addaction name="action_Rewind"/>
+    <addaction name="action_Fast_forwsrd"/>
+    <addaction name="action_Play_Pause"/>
+   </widget>
    <addaction name="menu_Queue"/>
    <addaction name="menu_Settings"/>
+   <addaction name="menu_Player"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -67,6 +79,51 @@
   <action name="action_Setting">
    <property name="text">
     <string>&amp;Setting</string>
+   </property>
+  </action>
+  <action name="action_Stop">
+   <property name="text">
+    <string>&amp;Stop</string>
+   </property>
+  </action>
+  <action name="action_Next">
+   <property name="text">
+    <string>&amp;Next</string>
+   </property>
+   <property name="shortcut">
+    <string>Down</string>
+   </property>
+  </action>
+  <action name="action_Previous">
+   <property name="text">
+    <string>&amp;Previous</string>
+   </property>
+   <property name="shortcut">
+    <string>Up</string>
+   </property>
+  </action>
+  <action name="action_Rewind">
+   <property name="text">
+    <string>&amp;Rewind</string>
+   </property>
+   <property name="shortcut">
+    <string>Left</string>
+   </property>
+  </action>
+  <action name="action_Fast_forwsrd">
+   <property name="text">
+    <string>&amp;Fast forwsrd</string>
+   </property>
+   <property name="shortcut">
+    <string>Right</string>
+   </property>
+  </action>
+  <action name="action_Play_Pause">
+   <property name="text">
+    <string>&amp;Play/Pause</string>
+   </property>
+   <property name="shortcut">
+    <string>Space</string>
    </property>
   </action>
  </widget>

@@ -102,3 +102,29 @@ void generalWindow::on_action_Add_music_to_Queue_triggered() {
 void generalWindow::on_action_Setting_triggered() {
     m_WindowSetting->show();
 }
+
+void generalWindow::on_action_Next_triggered()
+{
+    nextMusic(true);
+}
+
+void generalWindow::on_action_Previous_triggered()
+{
+    previousMusic();
+}
+
+void generalWindow::on_action_Play_Pause_triggered()
+{
+    m_playMusic->clickShortKeyPlay();
+}
+
+
+void generalWindow::on_action_Rewind_triggered()
+{
+    m_playMusic->clickShortKeyRewind();
+}
+
+void generalWindow::on_action_Fast_forwsrd_triggered()
+{
+    m_playMusic->clickShortKeyFastForward();
+}
