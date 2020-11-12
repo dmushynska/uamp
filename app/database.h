@@ -25,13 +25,32 @@ public:
         db.close();
     }
 
+    bool SignUp(const QString &user, const QString &pass) {
+        QSqlQuery query;
+            query.prepare(
+            "INSERT INTO Users (User, Pass) "
+            "VALUES (:User, :Pass)");
+            query.bindValue(":User", user);
+            query.bindValue(":Pass", pass);
+        return query.exec();
+    }
+
+    bool SignIn(const QString &user, const QString &pass) {
+        QSqlQuery query;
+        query.exec("select User from Users where Pass = '" + pass + "';");
+        query.first();
+        if (query.value(0).toString() == user)
+            return true;
+        return false;
+    }
+
     void addTrack(QString path, QTreeWidgetItem *topLevelItem, generalWindow *m_main) {
         QString name = m_main->GetFileName(path);
         MyTreeWidgetItem *widgetitem = new MyTreeWidgetItem(topLevelItem, name, path);
         widgetitem->setText(0, name);
     }
 
-    void addPlaylist(QTreeWidget *treeWidget, QString name, int id, generalWindow *m_main) {
+    MyTreeWidgetItem *addPlaylist(QTreeWidget *treeWidget, const QString &name, int id, generalWindow *m_main) {
         QSqlQuery query;
         saveImage(name);
         MyTreeWidgetItem *topLevelItem;
@@ -46,11 +65,19 @@ public:
         while (query.next()) {
             addTrack(query.value(0).toString(), topLevelItem, m_main);
         }
+        return topLevelItem;
     }
 
-    void selectPlaylistFromDataBase(QTreeWidget *treeWidget, generalWindow *m_main) {
+    int GetUserId(const QString &user) {
         QSqlQuery query;
-        query.exec("select Name, NumbPlaylist from Playlists");
+        query.exec("select NumbUser from Users where User = '" + user + "';");
+        query.first();
+        return query.value(0).toInt();
+    }
+
+    void selectPlaylistFromDataBase(QTreeWidget *treeWidget, const QString &user, generalWindow *m_main) {
+        QSqlQuery query;
+        query.exec("select Name, NumbPlaylist from Playlists where NumbUser = " + QString::number(GetUserId(user)));
         while (query.next()) {
             addPlaylist(treeWidget, query.value(0).toString(), query.value(1).toInt(), m_main);
         }
@@ -59,8 +86,9 @@ public:
     void createDataBase() {
         QSqlQuery query;
         qDebug() << query.exec("create table IF NOT EXISTS Tracks (NumbTrack integer primary key AUTOINCREMENT, Path TEXT UNIQUE, Stars iINT, Rating INT)");
-        qDebug() << query.exec("create table IF NOT EXISTS Playlists (NumbPlaylist integer primary key AUTOINCREMENT, Name TEXT UNIQUE, IMAGES BLOB)");
+        qDebug() << query.exec("create table IF NOT EXISTS Playlists (NumbPlaylist integer primary key AUTOINCREMENT, NumbUser INT, Name TEXT UNIQUE, IMAGES BLOB)");
         qDebug() << query.exec("create table IF NOT EXISTS TrackPlaylists (NumbTrack INT, NumbPlaylist INT, PRIMARY KEY (NumbTrack, NumbPlaylist))");
+        qDebug() << query.exec("create table IF NOT EXISTS Users (NumbUser integer primary key AUTOINCREMENT, User Text UNIQUE, Pass TEXT)");
     }
 
     int NumbPlaylist(QString name) {
@@ -70,12 +98,13 @@ public:
         return query.value(0).toInt();
     }
 
-    int addToPlaylists(QString name) {
+    int addToPlaylists(const QString &name, const QString &user) {
         QSqlQuery query;
         query.prepare(
-            "INSERT INTO Playlists (Name) "
-            "VALUES (:Name)");
+            "INSERT INTO Playlists (Name, NumbUser) "
+            "VALUES (:Name, :NumbUser)");
         query.bindValue(":Name", name);
+        query.bindValue(":NumbUser", GetUserId(user));
         bool exec = query.exec();
         if (exec == 0)
             return -1;
@@ -140,7 +169,7 @@ public:
         file.close();
     }
 
-    QByteArray GetImage(QString name) {
+    QByteArray GetImage(const QString &name) {
         QSqlQuery query;
         qDebug() << query.exec("select IMAGES from Playlists where Name = '" + name + "';");
         query.first();
@@ -156,8 +185,9 @@ public:
         buffer.open(QIODevice::WriteOnly);
         pixmap.save(&file, "PNG");
     }
-    void deleteImage(QString name) {
+
+    void deleteImage(const QString &name) {
         QSqlQuery query;
-        qDebug() << "delete photo" << query.exec("delete IMAGES from Playlists where Name = '" + name + "';");
+        qDebug() << "delete photo " << name << query.exec("DELETE IMAGES from Playlists where Name = '" + name + "';");
     }
 };
