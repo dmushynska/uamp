@@ -21,11 +21,14 @@ public:
     ~Playlist();
     void clickMouse(const QPoint &point);
     void clicked();
-
+    void exportPlaylist(QTreeWidgetItem *my);
+    void importPlaylist();
+    QString m_user;
 private:
     Ui::Playlist *ui;
     DataBase m_db;
     generalWindow *m_main;
+    
 };
 
 #endif // PLAYLIST_H
