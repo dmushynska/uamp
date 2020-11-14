@@ -10,10 +10,10 @@
 #include <taglib/fileref.h>
 #include "windowsetting.h"
 
-
 class MusicList;
 class DTagMusic;
 class PlayMusic;
+class DataBase;
 
 namespace Ui {
 class generalWindow;
@@ -52,7 +52,8 @@ private slots:
     void on_action_Rewind_triggered();
 
     void on_action_Fast_forwsrd_triggered();
-
+public:
+    DataBase *m_db;
 private:
     Ui::generalWindow *ui;
     PlayMusic *m_playMusic;

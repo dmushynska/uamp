@@ -26,9 +26,8 @@ public:
     QString m_user;
 private:
     Ui::Playlist *ui;
-    DataBase m_db;
+    // DataBase m_db;
     generalWindow *m_main;
-    
 };
 
 #endif // PLAYLIST_H

@@ -39,7 +39,8 @@ SOURCES += \
     musicwidget.cpp \
     playlist.cpp \
     playmusic.cpp \
-    windowsetting.cpp
+    windowsetting.cpp \
+    radio.cpp
 
 HEADERS += \
         generalwindow.h \
@@ -56,7 +57,8 @@ HEADERS += \
     mytreewidgetitem.h \
     playlist.h \
     playmusic.h \
-    windowsetting.h
+    windowsetting.h \
+    radio.h
 
 FORMS += \
         generalwindow.ui \
@@ -70,7 +72,8 @@ FORMS += \
     musicwidget.ui \
     playlist.ui \
     playmusic.ui \
-    windowsetting.ui
+    windowsetting.ui \
+    radio.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

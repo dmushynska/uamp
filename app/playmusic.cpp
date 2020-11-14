@@ -1,6 +1,7 @@
 #include "playmusic.h"
 #include "ui_playmusic.h"
 #include "generalwindow.h"
+#include "database.h"
 //#include <QMediaPlaylist>
 
 PlayMusic::PlayMusic(QWidget *parent) :
@@ -21,6 +22,10 @@ PlayMusic::PlayMusic(QWidget *parent) :
     m_window = qobject_cast<generalWindow*>(parent);
     this->setTimeMusic(0, 0);
     ui->sliderMusic->setTracking(false);
+    if (m_window->m_db->GetTrack().size())
+        m_media->setMedia(QUrl::fromLocalFile(m_window->m_db->GetTrack()));
+    m_media->setVolume(m_window->m_db->GetVolume());
+
 
 //    QMediaPlaylist *playlist = new QMediaPlaylist;
 
@@ -31,6 +36,8 @@ PlayMusic::PlayMusic(QWidget *parent) :
 
 PlayMusic::~PlayMusic()
 {
+//    m_media->position()
+    m_window->m_db->addVolumeAndPos(m_media->volume(), m_media->position());
     delete ui;
 }
 
