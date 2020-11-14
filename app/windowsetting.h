@@ -24,7 +24,8 @@ public:
         artist,
         title,
         album,
-        genre
+        genre,
+        random
     };
     enum class nextMusic {
         onePlay,
@@ -35,6 +36,7 @@ public:
     WindowSetting::nextMusic getTypeNext();
     WindowSetting::Sort getTypeSort(void);
     void timeoutResetTimer(void);
+    void setSortType(WindowSetting::Sort type);
 
 signals:
     void dialogClosed();

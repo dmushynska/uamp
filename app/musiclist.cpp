@@ -150,6 +150,13 @@ void MusicList::insertWindgetPos(musicWidget *newMusic, WindowSetting::Sort type
                     return;
                 }
                 break;
+            case WindowSetting::Sort::random:
+                {
+                    int pos = (rand() % (this->ui->layaoutPlayMusicList->count()));
+                    ui->layaoutPlayMusicList->insertWidget(pos, newMusic);
+                    return;
+                }
+                break;
             case WindowSetting::Sort::user:
                 return;
         }

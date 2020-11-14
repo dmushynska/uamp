@@ -53,6 +53,8 @@ private slots:
 
     void on_ButtonNext_clicked();
 
+    void on_ButtonShuffle_clicked();
+
 private:
     Ui::PlayMusic *ui;
     QMediaPlayer *m_media;

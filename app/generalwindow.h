@@ -36,6 +36,7 @@ public:
     QString GetFileName(const QString &path);
     WindowSetting::Sort getSortType(void);
     void setSort(WindowSetting::Sort type);
+    void setSortType(WindowSetting::Sort type);
 
 private slots:
 

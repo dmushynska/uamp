@@ -54,6 +54,15 @@ WindowSetting::Sort WindowSetting::getTypeSort(void) {
     return this->m_TypeSort;
 }
 
+void WindowSetting::setSortType(WindowSetting::Sort type) {
+    if (Sort::random == type)
+        this->m_TypeSort = Sort::user;
+    else {
+        this->m_TypeSort = type;
+    }
+    ui->TypeSort->setCurrentIndex(static_cast<int>(this->m_TypeSort));
+}
+
 void WindowSetting::on_pushButtonStart_clicked()
 {
     switch (this->ui->Times->currentIndex()) {

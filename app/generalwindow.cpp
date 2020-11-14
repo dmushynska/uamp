@@ -48,6 +48,14 @@ WindowSetting::Sort generalWindow::getSortType(void) {
     return m_WindowSetting->getTypeSort();
 }
 
+
+void generalWindow::setSortType(WindowSetting::Sort type) {
+    this->m_MusicList->chengeTypeSort(type);
+    m_WindowSetting->setSortType(type);
+}
+
+
+
 void generalWindow::addNewMusicToQueue(const QString& path) {
     this->m_MusicList->addNewMusic(path);
 }

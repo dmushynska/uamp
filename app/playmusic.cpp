@@ -175,3 +175,8 @@ void PlayMusic::on_ButtonNext_clicked()
 {
     m_window->nextMusic(true);
 }
+
+void PlayMusic::on_ButtonShuffle_clicked()
+{
+    m_window->setSortType(WindowSetting::Sort::random);
+}
