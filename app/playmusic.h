@@ -5,6 +5,7 @@
 #include <QMediaPlayer>
 
 class generalWindow;
+class DataBase;
 
 namespace Ui {
 class PlayMusic;
@@ -26,6 +27,7 @@ public:
     void clickShortKeyPlay(void);
     void clickShortKeyRewind(void);
     void clickShortKeyFastForward(void);
+    void loadingSettings(DataBase *db);
 
 private:
     QString getTime(qint64 time);

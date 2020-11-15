@@ -76,7 +76,7 @@ public:
         query.exec();
     }
 
-    void addTypeSort(int Sort, int Type) {
+    void addTypeSort(int Type, int Sort) {
         QSqlQuery query;
         query.prepare("UPDATE Save SET Sort = :Sort, Type = :Type WHERE Numb = 1;");
         query.bindValue(":Sort", Sort);

@@ -20,22 +20,15 @@ MusicList::MusicList(QWidget *parent) : QWidget(parent),
     connect(ui->tab, &QWidget::customContextMenuRequested, this, &MusicList::customContextMenuRequested);
     ui->Playlists->addWidget(new Playlist(m_main));
     ui->radio->addWidget(new radio);
-    QList<QString> list = m_main->m_db->GetSavePlaylist();
-    // int i = 0;
-    for (auto it = list.begin(); list.end() != it; it++) {
-        addNewMusic(*it);
-        // if (i++ == m_main->m_db->GetId()) {
-        //     ui->layaoutPlayMusicList->itemAt(ui->layaoutPlayMusicList->count() - 2)->widget()->objectName() = "Play";
-        //     ui->layaoutPlayMusicList->itemAt(ui->layaoutPlayMusicList->count() - 2)->widget()->style()->unpolish(this);
-        //     ui->layaoutPlayMusicList->itemAt(ui->layaoutPlayMusicList->count() - 2)->widget()->style()->polish(this);
-        // }
+}
+
+void MusicList::loadingSettings(DataBase *db) {
+    QList<QString> list = db->GetSavePlaylist();
+    int i = 0;
+    for (auto it = list.begin(); list.end() != it; it++, i++) {
+        if (addNewMusic(*it) && i == db->GetId())
+            qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(this->ui->layaoutPlayMusicList->count() - 2)->widget())->setStylePlay();
     }
-    // ui->layaoutPlayMusicList->itemAt(0)->widget()
-    // qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(0)->widget())->dubleClick();
-    // qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(0)->widget())->clickDubleWidget();
-    // ui->layaoutPlayMusicList->itemAt(0)->widget()->objectName() = "Play";
-    // ui->layaoutPlayMusicList->itemAt(0)->widget()->style()->unpolish(this);
-    // ui->layaoutPlayMusicList->itemAt(0)->widget()->style()->polish(this);
 }
 
 void MusicList::playRandom(void) {
@@ -118,13 +111,15 @@ void MusicList::cleanList(void) {
     }
 }
 
-void MusicList::addNewMusic(const QString &path) {
+bool MusicList::addNewMusic(const QString &path) {
     musicWidget *newMusic = new musicWidget(m_main);
     if (!newMusic->setMusic(path)) {
         delete newMusic;
+        return false;
     } else {
         this->insertWindgetPos(newMusic, this->m_main->getSortType());
     }
+    return true;
 }
 
 void MusicList::insertWindgetPos(musicWidget *newMusic, WindowSetting::Sort type) {
@@ -145,7 +140,6 @@ void MusicList::insertWindgetPos(musicWidget *newMusic, WindowSetting::Sort type
             case WindowSetting::Sort::artist:
                 if (QString(newFile.tag()->artist().toCString()) < QString(f.tag()->artist().toCString())) {
                     ui->layaoutPlayMusicList->insertWidget(i, newMusic);
-                    qDebug() << "yes";
                     return;
                 }
                 break;

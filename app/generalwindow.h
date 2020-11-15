@@ -37,6 +37,9 @@ public:
     WindowSetting::Sort getSortType(void);
     void setSort(WindowSetting::Sort type);
     void setSortType(WindowSetting::Sort type);
+    void saveSettings(void);
+    void loadingSettings(void);
+    void setPlayMusic(const QString& name, const QString& path);
 
 private slots:
 

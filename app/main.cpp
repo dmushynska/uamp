@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
     file.open(QFile::ReadOnly);
     a.setStyleSheet(file.readAll());
     generalWindow w;
+    w.loadingSettings();
     w.show();
 
     return a.exec();

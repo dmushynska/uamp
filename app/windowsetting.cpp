@@ -2,6 +2,7 @@
 #include "ui_windowsetting.h"
 #include "generalwindow.h"
 #include <QtDebug>
+#include "database.h"
 
 WindowSetting::WindowSetting(QWidget *parent) :
     QDialog(parent),
@@ -21,6 +22,8 @@ WindowSetting::WindowSetting(QWidget *parent) :
 
 WindowSetting::~WindowSetting()
 {
+    m_main->m_db->addTypeSort(ui->TypePlay->currentIndex(), ui->TypeSort->currentIndex());
+
     delete ui;
 }
 
@@ -31,6 +34,14 @@ void WindowSetting::on_pushButton_Save_clicked()
         this->m_TypeSort = static_cast <Sort>(ui->TypeSort->currentIndex());
         this->m_main->setSort(this->m_TypeSort);
     }
+}
+
+void WindowSetting::loadingSettings(DataBase *db) {
+    ui->TypeSort->setCurrentIndex(db->GetSort());
+    ui->TypePlay->setCurrentIndex(db->GetType());
+    this->m_TypeNextMusic = static_cast <nextMusic>(ui->TypePlay->currentIndex());
+    this->m_TypeSort = static_cast <Sort>(ui->TypeSort->currentIndex());
+    this->m_main->setSort(this->m_TypeSort);
 }
 
 void WindowSetting::timeoutResetTimer(void) {

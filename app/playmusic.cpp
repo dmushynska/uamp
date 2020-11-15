@@ -22,21 +22,13 @@ PlayMusic::PlayMusic(QWidget *parent) :
     m_window = qobject_cast<generalWindow*>(parent);
     this->setTimeMusic(0, 0);
     ui->sliderMusic->setTracking(false);
-    if (m_window->m_db->GetTrack().size())
-        m_media->setMedia(QUrl::fromLocalFile(m_window->m_db->GetTrack()));
-    m_media->setVolume(m_window->m_db->GetVolume());
-
-
-//    QMediaPlaylist *playlist = new QMediaPlaylist;
-
-//    playlist->addMedia(QUrl::fromLocalFile("/Users/solianovsk/Desktop/Ты Врёшь.mp3"));
-//    playlist->save(QUrl::fromLocalFile
-//                   ("/Users/solianovsk/Desktop/3.m3u"),"m3u");
+    // if (m_window->m_db->GetTrack().size())
+    //     m_media->setMedia(QUrl::fromLocalFile(m_window->m_db->GetTrack()));
+    // ui->sliderVolume->setValue(m_window->m_db->GetVolume());
 }
 
 PlayMusic::~PlayMusic()
 {
-//    m_media->position()
     m_window->m_db->addVolumeAndPos(m_media->volume(), m_media->position());
     delete ui;
 }
@@ -84,6 +76,10 @@ QString PlayMusic::getTime(qint64 time) {
 
 void PlayMusic::setTimeMusic(qint64 valueTile, qint64 maxTime) {
     ui->labelTime->setText(this->getTime(valueTile) + "/" + this->getTime(maxTime));
+}
+
+void PlayMusic::loadingSettings(DataBase *db) {
+    ui->sliderVolume->setValue(db->GetVolume());
 }
 
 void PlayMusic::setNewMusic(const QString& name, const QString& path) {

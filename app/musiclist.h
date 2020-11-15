@@ -10,7 +10,7 @@ class MusicList;
 
 class musicWidget;
 class generalWindow;
-
+class DataBase;
 
 class MusicList : public QWidget
 {
@@ -23,10 +23,11 @@ public:
     void nextMusic (void);
     void previousMusic (void);
     void cleanList (void);
-    void addNewMusic(const QString& path);
+    bool addNewMusic(const QString& path);
     void customContextMenuRequested(const QPoint &pos);
     void playRandom(void);
     void chengeTypeSort(WindowSetting::Sort type);
+    void loadingSettings(DataBase *db);
 
 private:
     void insertWindgetPos(musicWidget *newMusic, WindowSetting::Sort type);

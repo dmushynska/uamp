@@ -44,6 +44,13 @@ generalWindow::~generalWindow() {
     delete m_db;
 }
 
+void generalWindow::loadingSettings(void) {
+    m_playMusic->loadingSettings(m_db);
+    m_MusicList->loadingSettings(m_db);
+    m_WindowSetting->loadingSettings(m_db);
+}
+
+
 void generalWindow::setSort(WindowSetting::Sort type) {
     this->m_MusicList->chengeTypeSort(type);
 }
@@ -74,6 +81,10 @@ void generalWindow::resetObjectName(void) {
 
 void generalWindow::playMusic(const QString& name, const QString& path) {
     this->m_playMusic->setNewMusicAndPlay(name, path);
+}
+
+void generalWindow::setPlayMusic(const QString& name, const QString& path) {
+    this->m_playMusic->setNewMusic(name, path);
 }
 
 void generalWindow::nextMusic(bool isButton) {
