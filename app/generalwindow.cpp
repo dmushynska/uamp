@@ -10,13 +10,13 @@
 
 QString generalWindow::GetFileName(const QString& path) {
     TagLib::FileRef f(path.toUtf8().constData());
-    if (QString(f.tag()->title().toCString()).size() == 0) {
-        QFile file(path);
-        QFileInfo fileInfo(file.fileName());
-        QString filename(fileInfo.fileName());
-        return filename;
+    if (!f.isNull() && QString(f.tag()->title().toCString()).size() != 0) {
+        return f.tag()->title().toCString();
     }
-    return f.tag()->title().toCString();
+    QFile file(path);
+    QFileInfo fileInfo(file.fileName());
+    QString filename(fileInfo.fileName());
+    return filename;
 }
 
 generalWindow::generalWindow(QWidget* parent) : QMainWindow(parent),

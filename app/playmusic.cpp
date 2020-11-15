@@ -2,6 +2,7 @@
 #include "ui_playmusic.h"
 #include "generalwindow.h"
 //#include <QMediaPlaylist>
+#include <QMediaMetaData>
 
 PlayMusic::PlayMusic(QWidget *parent) :
     QWidget(parent),
@@ -22,6 +23,7 @@ PlayMusic::PlayMusic(QWidget *parent) :
     this->setTimeMusic(0, 0);
     ui->sliderMusic->setTracking(false);
 
+//    QMediaMetaData data
 //    QMediaPlaylist *playlist = new QMediaPlaylist;
 
 //    playlist->addMedia(QUrl::fromLocalFile("/Users/solianovsk/Desktop/Ты Врёшь.mp3"));
