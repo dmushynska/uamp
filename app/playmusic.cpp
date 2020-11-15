@@ -1,6 +1,7 @@
 #include "playmusic.h"
 #include "ui_playmusic.h"
 #include "generalwindow.h"
+#include "database.h"
 //#include <QMediaPlaylist>
 #include <QMediaMetaData>
 
@@ -22,17 +23,11 @@ PlayMusic::PlayMusic(QWidget *parent) :
     m_window = qobject_cast<generalWindow*>(parent);
     this->setTimeMusic(0, 0);
     ui->sliderMusic->setTracking(false);
-
-//    QMediaMetaData data
-//    QMediaPlaylist *playlist = new QMediaPlaylist;
-
-//    playlist->addMedia(QUrl::fromLocalFile("/Users/solianovsk/Desktop/Ты Врёшь.mp3"));
-//    playlist->save(QUrl::fromLocalFile
-//                   ("/Users/solianovsk/Desktop/3.m3u"),"m3u");
 }
 
 PlayMusic::~PlayMusic()
 {
+    m_window->m_db->addVolumeAndPos(m_media->volume(), m_media->position());
     delete ui;
 }
 
@@ -79,6 +74,10 @@ QString PlayMusic::getTime(qint64 time) {
 
 void PlayMusic::setTimeMusic(qint64 valueTile, qint64 maxTime) {
     ui->labelTime->setText(this->getTime(valueTile) + "/" + this->getTime(maxTime));
+}
+
+void PlayMusic::loadingSettings(DataBase *db) {
+    ui->sliderVolume->setValue(db->GetVolume());
 }
 
 void PlayMusic::setNewMusic(const QString& name, const QString& path) {

@@ -5,6 +5,7 @@
 #include "dtagmusic.h"
 #include "musiclist.h"
 #include "playmusic.h"
+#include "database.h"
 #include "ui_generalwindow.h"
 #include "windowsetting.h"
 
@@ -23,13 +24,15 @@ generalWindow::generalWindow(QWidget* parent) : QMainWindow(parent),
                                                 ui(new Ui::generalWindow) {
     srand(static_cast<unsigned int>(time(0)));
     ui->setupUi(this);
+    m_db = new DataBase();
+    m_WindowSetting = new WindowSetting(this);
     this->setWindowFlags(Qt::Window);
     m_playMusic = new PlayMusic(this);
     this->ui->generalLayout->addWidget(m_playMusic);
     m_MusicList = new MusicList(this);
     this->ui->horizontalLayout->addWidget(m_MusicList);
     m_WindowTag = new DTagMusic(this);
-    m_WindowSetting = new WindowSetting(this);
+    
 }
 
 generalWindow::~generalWindow() {
@@ -38,7 +41,15 @@ generalWindow::~generalWindow() {
     delete m_MusicList;
     delete m_WindowTag;
     delete m_WindowSetting;
+    delete m_db;
 }
+
+void generalWindow::loadingSettings(void) {
+    m_playMusic->loadingSettings(m_db);
+    m_MusicList->loadingSettings(m_db);
+    m_WindowSetting->loadingSettings(m_db);
+}
+
 
 void generalWindow::setSort(WindowSetting::Sort type) {
     this->m_MusicList->chengeTypeSort(type);
@@ -70,6 +81,10 @@ void generalWindow::resetObjectName(void) {
 
 void generalWindow::playMusic(const QString& name, const QString& path) {
     this->m_playMusic->setNewMusicAndPlay(name, path);
+}
+
+void generalWindow::setPlayMusic(const QString& name, const QString& path) {
+    this->m_playMusic->setNewMusic(name, path);
 }
 
 void generalWindow::nextMusic(bool isButton) {

@@ -33,6 +33,7 @@ private slots:
 
 private:
     Ui::DTagMusic *ui;
+    QString m_name;
 };
 
 #endif // DTAGMUSIC_H

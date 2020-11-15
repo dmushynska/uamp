@@ -10,10 +10,10 @@
 #include <taglib/fileref.h>
 #include "windowsetting.h"
 
-
 class MusicList;
 class DTagMusic;
 class PlayMusic;
+class DataBase;
 
 namespace Ui {
 class generalWindow;
@@ -37,6 +37,9 @@ public:
     WindowSetting::Sort getSortType(void);
     void setSort(WindowSetting::Sort type);
     void setSortType(WindowSetting::Sort type);
+    void saveSettings(void);
+    void loadingSettings(void);
+    void setPlayMusic(const QString& name, const QString& path);
 
 private slots:
 
@@ -52,7 +55,8 @@ private slots:
     void on_action_Rewind_triggered();
 
     void on_action_Fast_forwsrd_triggered();
-
+public:
+    DataBase *m_db;
 private:
     Ui::generalWindow *ui;
     PlayMusic *m_playMusic;

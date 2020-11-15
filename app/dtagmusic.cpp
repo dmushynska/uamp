@@ -9,6 +9,43 @@
 #include <QFileDialog>
 #include <QBuffer>
 
+
+static void setNewImg(const QString& pathFile, const QString& pathImg) {
+    TagLib::MPEG::File file(pathFile.toUtf8().constData());
+    TagLib::ID3v2::Tag *tag = file.ID3v2Tag(true);
+    if (tag) {
+        TagLib::ID3v2::AttachedPictureFrame *frame = new TagLib::ID3v2::AttachedPictureFrame;
+        frame->setMimeType(pathImg.toUtf8().data());
+        QImage image(pathImg);
+        QByteArray bytes;
+        QBuffer buffer(&bytes);
+        buffer.open(QIODevice::WriteOnly);
+            if (pathImg.right(3).toUpper() == "PEG") {
+                if (!image.save(&buffer, "JPEG")) {
+                    buffer.close();
+                    return;
+                }
+            }
+            else if (pathImg.right(3).toUpper() == "PNG"){
+                if (!image.save(&buffer, "PNG")) {
+                    buffer.close();
+                    return;
+                }
+            }
+            else {
+                if (!image.save(&buffer, "IMG")) {
+                    buffer.close();
+                    return;
+                }
+            }
+        buffer.close();
+        frame->setPicture(TagLib::ByteVector( bytes.data(), bytes.count() ));
+            tag->removeFrames("APIC");
+        tag->addFrame(frame);
+        file.save();
+    }
+}
+
 DTagMusic::DTagMusic(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DTagMusic)
@@ -41,31 +78,46 @@ void DTagMusic::checkBoxChenge() {
 void DTagMusic::setTagWindow(const QString& path) {
     ui->m_Path->setText(path);
     {
+        ui->ButtonChengeImg->setEnabled(true);
+        m_name.clear();
         TagLib::FileRef f(path.toUtf8().constData());
-        TagLib::MPEG::File file(path.toUtf8().constData());
-        TagLib::ID3v2::Tag *tag = file.ID3v2Tag();
+        QString fileType = path.right(3).toUpper();
 
-        if(tag) {
-            TagLib::ID3v2::FrameList frameList = tag->frameListMap()["APIC"];
-            if (!frameList.isEmpty()) {
-                TagLib::ID3v2::AttachedPictureFrame *coverImg = static_cast<TagLib::ID3v2::AttachedPictureFrame *>(frameList.front());
-                QImage coverQImg;
-                coverQImg.loadFromData((const uchar *) coverImg->picture().data(), coverImg->picture().size());
-                ui->m_Img->setPixmap(QPixmap::fromImage(coverQImg));
-                int h = coverQImg.width() * 120 / coverQImg.height();
-                if (h > 240)
-                    h = 240;
-                ui->m_Img->setFixedWidth(h);
+        if (fileType == "MP3") {
+            TagLib::MPEG::File file(path.toUtf8().constData());
+            TagLib::ID3v2::Tag *tag = file.ID3v2Tag();
+            
+            if(tag) {
+                TagLib::ID3v2::FrameList frameList = tag->frameListMap()["APIC"];
+                if (!frameList.isEmpty()) {
+                    TagLib::ID3v2::AttachedPictureFrame *coverImg = static_cast<TagLib::ID3v2::AttachedPictureFrame *>(frameList.front());
+                    QImage coverQImg;
+                    coverQImg.loadFromData((const uchar *) coverImg->picture().data(), coverImg->picture().size());
+                    ui->m_Img->setPixmap(QPixmap::fromImage(coverQImg));
+                    int h = coverQImg.width() * 120 / coverQImg.height();
+                    if (h > 240)
+                        h = 240;
+                    ui->m_Img->setFixedWidth(h);
+                }
+                else
+                {
+                    QImage image("./app/download.jpeg");
+                    ui->m_Img->setPixmap(QPixmap::fromImage(image));
+                    int h = image.width() * 120 / image.height();
+                    if (h > 240)
+                        h = 240;
+                    ui->m_Img->setFixedWidth(h);
+                }
             }
-            else
-            {
-                QImage image("./app/download.jpeg");
-                ui->m_Img->setPixmap(QPixmap::fromImage(image));
-                int h = image.width() * 120 / image.height();
-                if (h > 240)
-                    h = 240;
-                ui->m_Img->setFixedWidth(h);
-            }
+        }
+        else {
+            QImage image("./app/download.jpeg");
+            ui->m_Img->setPixmap(QPixmap::fromImage(image));
+            int h = image.width() * 120 / image.height();
+            if (h > 240)
+                h = 240;
+            ui->m_Img->setFixedWidth(h);
+            ui->ButtonChengeImg->setEnabled(false);
         }
         ui->m_artist->setText(f.tag()->artist().toCString());
         ui->m_Albom->setText(f.tag()->album().toCString());
@@ -93,7 +145,10 @@ void DTagMusic::saveChengeTag(void) {
             f.save();
         }
         file.close();
+        
     }
+    if (m_name.size() > 0)
+        setNewImg(ui->m_Path->text(), m_name);
 }
 
 DTagMusic::~DTagMusic()
@@ -106,27 +161,12 @@ void DTagMusic::on_ButtonChengeImg_clicked()
     QString path = QFileDialog::getOpenFileName(this, tr("Open Track"), QDir::currentPath(),
                                 tr("Images(*.png *.img *.jpeg)"));
     if (path.size()) {
-        // m_main->addNewMusicToQueue(path);
-        qDebug() << path;
-        TagLib::MPEG::File file(ui->m_Path->text().toUtf8().constData());
-        TagLib::ID3v2::Tag *tag = file.ID3v2Tag(true);
-        if(tag) {
-            TagLib::ID3v2::AttachedPictureFrame *frame = new TagLib::ID3v2::AttachedPictureFrame;
-            frame->setMimeType(path.toUtf8().data());
-            QImage image(path);
-            QByteArray bytes;
-            QBuffer buffer(&bytes);
-            buffer.open(QIODevice::WriteOnly);
-            if (!image.save(&buffer, "JPEG")) {
-                qDebug() << "Error save img";
-                buffer.close();
-                return;
-            }
-            buffer.close();
-            frame->setPicture(TagLib::ByteVector( bytes.data(), bytes.count() ));
-            tag->addFrame(frame);
-            file.save();
-        }
-
+        m_name = path;
+        QImage image(path);
+        ui->m_Img->setPixmap(QPixmap::fromImage(image));
+        int h = image.width() * 120 / image.height();
+        if (h > 240)
+             h = 240;
+        ui->m_Img->setFixedWidth(h);
     }
 }

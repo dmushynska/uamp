@@ -1,1 +1,1 @@
-cmake . -Bbuild -Wdev -Werror=dev && cmake --build ./build
+cmake . -DCMAKE_BUILD_TYPE=Release -Bbuild -Wdev -Werror=dev && cmake --build ./build

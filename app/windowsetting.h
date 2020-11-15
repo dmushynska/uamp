@@ -10,6 +10,7 @@ class WindowSetting;
 }
 
 class generalWindow;
+class DataBase;
 
 class WindowSetting : public QDialog
 {
@@ -37,6 +38,7 @@ public:
     WindowSetting::Sort getTypeSort(void);
     void timeoutResetTimer(void);
     void setSortType(WindowSetting::Sort type);
+    void loadingSettings(DataBase *db);
 
 signals:
     void dialogClosed();

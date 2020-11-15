@@ -1,24 +1,34 @@
 #include "musiclist.h"
-#include "ui_musiclist.h"
-#include "musicwidget.h"
-#include "generalwindow.h"
 
-#include <QMenu>
-#include <QFileDialog>
-#include <taglib/tag.h>
 #include <taglib/fileref.h>
+#include <taglib/tag.h>
+
+#include <QFileDialog>
+#include <QMenu>
+
+#include "generalwindow.h"
+#include "musicwidget.h"
 #include "playlist.h"
+#include "radio.h"
+#include "ui_musiclist.h"
 
-
-MusicList::MusicList(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::MusicList)
-{
+MusicList::MusicList(QWidget *parent) : QWidget(parent),
+                                        ui(new Ui::MusicList) {
     ui->setupUi(this);
-    m_main = qobject_cast<generalWindow*>(parent);
+    m_main = qobject_cast<generalWindow *>(parent);
     ui->tab->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->tab, &QWidget::customContextMenuRequested, this, &MusicList::customContextMenuRequested);
     ui->Playlists->addWidget(new Playlist(m_main));
+    ui->radio->addWidget(new radio);
+}
+
+void MusicList::loadingSettings(DataBase *db) {
+    QList<QString> list = db->GetSavePlaylist();
+    int i = 0;
+    for (auto it = list.begin(); list.end() != it; it++, i++) {
+        if (addNewMusic(*it) && i == db->GetId())
+            qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(this->ui->layaoutPlayMusicList->count() - 2)->widget())->setStylePlay();
+    }
 }
 
 void MusicList::playRandom(void) {
@@ -32,29 +42,27 @@ void MusicList::customContextMenuRequested(const QPoint &pos) {
     QMenu rightMenu;
     rightMenu.addAction("Add new music", this, [this] {
         QString path = QFileDialog::getOpenFileName(this, tr("Open Track"), QDir::currentPath(),
-                                tr("Audio-Files(*.mp3 *.wav *.mp4 *.flac)"));
+                                                    tr("Audio-Files(*.mp3 *.wav *.mp4 *.flac)"));
         if (path.size()) {
-               m_main->addNewMusicToQueue(path);
+            m_main->addNewMusicToQueue(path);
         }
     });
     for (int i = 0; i < ui->layaoutPlayMusicList->count() - 1; i++) {
         if (ui->layaoutPlayMusicList->itemAt(i)->geometry().contains(pos)) {
             rightMenu.addAction("Delete music to Queue", this, [this, i] {
-                 delete ui->layaoutPlayMusicList->takeAt(i)->widget();
+                delete ui->layaoutPlayMusicList->takeAt(i)->widget();
             });
             rightMenu.addAction("Show tag info music", this, [this, i] {
-                 this->m_main->showEditTagMusic(qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(i)->widget())->getPathMusic());
+                this->m_main->showEditTagMusic(qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(i)->widget())->getPathMusic());
             });
             break;
         }
     }
     rightMenu.show();
     rightMenu.exec(QCursor::pos());
-
 }
 
 void MusicList::resetObjectName(void) {
-
     for (int i = 0; i < ui->layaoutPlayMusicList->count() - 1; i++) {
         if (ui->layaoutPlayMusicList->itemAt(i)->widget()->objectName() == "Play") {
             ui->layaoutPlayMusicList->itemAt(i)->widget()->setObjectName(nullptr);
@@ -65,16 +73,14 @@ void MusicList::resetObjectName(void) {
     }
 }
 
-
-void MusicList::nextMusic (void) {
+void MusicList::nextMusic(void) {
     if (ui->layaoutPlayMusicList->count() < 3)
         return;
     for (int i = 0; i < ui->layaoutPlayMusicList->count() - 1; i++) {
         if (ui->layaoutPlayMusicList->itemAt(i)->widget()->objectName() == "Play") {
             if (i == ui->layaoutPlayMusicList->count() - 2) {
                 qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(0)->widget())->clickDubleWidget();
-            }
-            else {
+            } else {
                 qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(++i)->widget())->clickDubleWidget();
             }
             return;
@@ -83,15 +89,14 @@ void MusicList::nextMusic (void) {
     qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(0)->widget())->clickDubleWidget();
 }
 
-void MusicList::previousMusic (void) {
+void MusicList::previousMusic(void) {
     if (ui->layaoutPlayMusicList->count() < 3)
         return;
     for (int i = 0; i < ui->layaoutPlayMusicList->count() - 1; i++) {
         if (ui->layaoutPlayMusicList->itemAt(i)->widget()->objectName() == "Play") {
             if (i == 0) {
                 qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(ui->layaoutPlayMusicList->count() - 2)->widget())->clickDubleWidget();
-            }
-            else {
+            } else {
                 qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(--i)->widget())->clickDubleWidget();
             }
             return;
@@ -100,20 +105,21 @@ void MusicList::previousMusic (void) {
     qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(0)->widget())->clickDubleWidget();
 }
 
-void MusicList::cleanList (void) {
+void MusicList::cleanList(void) {
     for (int i = 0; i < ui->layaoutPlayMusicList->count() - 1;) {
         delete ui->layaoutPlayMusicList->takeAt(i)->widget();
     }
 }
 
-void MusicList::addNewMusic(const QString& path) {
+bool MusicList::addNewMusic(const QString &path) {
     musicWidget *newMusic = new musicWidget(m_main);
     if (!newMusic->setMusic(path)) {
         delete newMusic;
-    }
-    else {
+        return false;
+    } else {
         this->insertWindgetPos(newMusic, this->m_main->getSortType());
     }
+    return true;
 }
 
 void MusicList::insertWindgetPos(musicWidget *newMusic, WindowSetting::Sort type) {
@@ -134,7 +140,6 @@ void MusicList::insertWindgetPos(musicWidget *newMusic, WindowSetting::Sort type
             case WindowSetting::Sort::artist:
                 if (QString(newFile.tag()->artist().toCString()) < QString(f.tag()->artist().toCString())) {
                     ui->layaoutPlayMusicList->insertWidget(i, newMusic);
-                    qDebug() << "yes";
                     return;
                 }
                 break;
@@ -150,20 +155,17 @@ void MusicList::insertWindgetPos(musicWidget *newMusic, WindowSetting::Sort type
                     return;
                 }
                 break;
-            case WindowSetting::Sort::random:
-                {
-                    int pos = (rand() % (this->ui->layaoutPlayMusicList->count()));
-                    ui->layaoutPlayMusicList->insertWidget(pos, newMusic);
-                    return;
-                }
-                break;
+            case WindowSetting::Sort::random: {
+                int pos = (rand() % (this->ui->layaoutPlayMusicList->count()));
+                ui->layaoutPlayMusicList->insertWidget(pos, newMusic);
+                return;
+            } break;
             case WindowSetting::Sort::user:
                 return;
         }
     }
     ui->layaoutPlayMusicList->insertWidget(ui->layaoutPlayMusicList->count() - 1, newMusic);
 }
-
 
 void MusicList::chengeTypeSort(WindowSetting::Sort type) {
     if (ui->layaoutPlayMusicList->count() != 1 && type != WindowSetting::Sort::user) {
@@ -173,8 +175,13 @@ void MusicList::chengeTypeSort(WindowSetting::Sort type) {
     }
 }
 
-MusicList::~MusicList()
-{
+MusicList::~MusicList() {
+    m_main->m_db->deleteSavePlaylist();
+    for (int i = 0; i < ui->layaoutPlayMusicList->count() - 1; i++) {
+        m_main->m_db->addIntoSavePlaylist(qobject_cast<musicWidget *>(ui->layaoutPlayMusicList->itemAt(i)->widget())->getPathMusic());
+        if (ui->layaoutPlayMusicList->itemAt(i)->widget()->objectName() == "Play") {
+            m_main->m_db->addId(i);
+        }
+    }
     delete ui;
 }
-

@@ -25,13 +25,107 @@ public:
         db.close();
     }
 
+    QString GetTrack() {
+        QSqlQuery query;
+        query.exec("select Path from SavePlaylist where NumbTrack = " + QString::number(GetId()));
+        query.first();
+        if (query.size() > 0)
+            return query.value(0).toString();
+        return nullptr;
+    }
+
+    void addIntoSavePlaylist(const QString &path) {
+        QSqlQuery query;
+        query.prepare(
+            "INSERT INTO SavePlaylist (Path) "
+            "VALUES (:Path)");
+        query.bindValue(":Path", path);
+        query.exec();
+    }
+
+    QList<QString> GetSavePlaylist() {
+        QSqlQuery query;
+        QList<QString> list;
+        query.exec("select Path from SavePlaylist");
+        query.first();
+        if (query.value(0).toString().size() > 0)
+            list.push_back(query.value(0).toString());
+        while (query.next()) {
+            list.push_back(query.value(0).toString());
+        }
+        return list;
+    }
+
+    void deleteSavePlaylist() {
+        QSqlQuery query;
+        query.exec("DELETE FROM SavePlaylist;");
+    }
+
+    void addVolumeAndPos(int Vol, int Pos) {
+        QSqlQuery query;
+        query.prepare("UPDATE Save SET Volume = :Vol, Pos = :pos WHERE Numb = 1;");
+        query.bindValue(":Vol", Vol);
+        query.bindValue(":pos", Pos);
+        query.exec();
+    }
+
+    void addId(int id) {
+        QSqlQuery query;
+        query.prepare("UPDATE Save SET Id = :Id WHERE Numb = 1;");
+        query.bindValue(":Id", id);
+        query.exec();
+    }
+
+    void addTypeSort(int Type, int Sort) {
+        QSqlQuery query;
+        query.prepare("UPDATE Save SET Sort = :Sort, Type = :Type WHERE Numb = 1;");
+        query.bindValue(":Sort", Sort);
+        query.bindValue(":Type", Type);
+        query.exec();
+    }
+
+    int GetVolume() {
+        QSqlQuery query;
+        query.exec("select Volume from Save WHERE Numb = 1");
+        query.first();
+        return query.value(0).toInt();
+    }
+
+    int GetPos() {
+        QSqlQuery query;
+        query.exec("select Pos from Save WHERE Numb = 1");
+        query.first();
+        return query.value(0).toInt();
+    }
+
+    int GetId() {
+        QSqlQuery query;
+        query.exec("select Id from Save WHERE Numb = 1");
+        query.first();
+        return query.value(0).toInt();
+    }
+
+    int GetSort() {
+        QSqlQuery query;
+        query.exec("select Sort from Save WHERE Numb = 1");
+        query.first();
+        return query.value(0).toInt();
+    }
+
+    int GetType() {
+        QSqlQuery query;
+        query.exec("select Type from Save WHERE Numb = 1");
+        query.first();
+        return query.value(0).toInt();
+    }
+
     bool SignUp(const QString &user, const QString &pass) {
         QSqlQuery query;
-            query.prepare(
+        query.prepare(
             "INSERT INTO Users (User, Pass) "
             "VALUES (:User, :Pass)");
-            query.bindValue(":User", user);
-            query.bindValue(":Pass", pass);
+        query.bindValue(":User", user);
+        query.bindValue(":Pass", pass);
         return query.exec();
     }
 
@@ -44,7 +138,7 @@ public:
         return false;
     }
 
-    void addTrack(QString path, QTreeWidgetItem *topLevelItem, generalWindow *m_main) {
+    void addTrack(const QString &path, QTreeWidgetItem *topLevelItem, generalWindow *m_main) {
         QString name = m_main->GetFileName(path);
         MyTreeWidgetItem *widgetitem = new MyTreeWidgetItem(topLevelItem, name, path);
         widgetitem->setText(0, name);
@@ -85,13 +179,21 @@ public:
 
     void createDataBase() {
         QSqlQuery query;
-        qDebug() << query.exec("create table IF NOT EXISTS Tracks (NumbTrack integer primary key AUTOINCREMENT, Path TEXT UNIQUE, Stars iINT, Rating INT)");
-        qDebug() << query.exec("create table IF NOT EXISTS Playlists (NumbPlaylist integer primary key AUTOINCREMENT, NumbUser INT, Name TEXT UNIQUE, IMAGES BLOB)");
-        qDebug() << query.exec("create table IF NOT EXISTS TrackPlaylists (NumbTrack INT, NumbPlaylist INT, PRIMARY KEY (NumbTrack, NumbPlaylist))");
-        qDebug() << query.exec("create table IF NOT EXISTS Users (NumbUser integer primary key AUTOINCREMENT, User Text UNIQUE, Pass TEXT)");
+        query.exec("create table IF NOT EXISTS Tracks (NumbTrack integer primary key AUTOINCREMENT, Path TEXT UNIQUE, Stars iINT, Rating INT)");
+        query.exec("create table IF NOT EXISTS Playlists (NumbPlaylist integer primary key AUTOINCREMENT, NumbUser INT, Name TEXT UNIQUE, IMAGES BLOB)");
+        query.exec("create table IF NOT EXISTS TrackPlaylists (NumbTrack INT, NumbPlaylist INT, PRIMARY KEY (NumbTrack, NumbPlaylist))");
+        query.exec("create table IF NOT EXISTS Users (NumbUser integer primary key AUTOINCREMENT, User Text UNIQUE, Pass TEXT)");
+        query.exec("create table IF NOT EXISTS SavePlaylist (NumbTrack integer primary key AUTOINCREMENT, Path TEXT)");
+        query.exec("create table IF NOT EXISTS Save (Numb integer primary key AUTOINCREMENT, Id INT, Pos INT, Volume INT, Sort INT, Type INT)");
+        query.prepare(
+            "INSERT INTO Save (Volume) "
+            "VALUES (:Vol)");
+        query.bindValue(":Vol", 70);
+        query.exec();
+        query.exec("Delete from Save where Numb != 1");
     }
 
-    int NumbPlaylist(QString name) {
+    int NumbPlaylist(const QString &name) {
         QSqlQuery query;
         query.exec("select NumbPlaylist from Playlists where Name = '" + name + "';");
         query.first();
@@ -111,7 +213,7 @@ public:
         return NumbPlaylist(name);
     }
 
-    int addToTracks(QString path) {
+    int addToTracks(const QString &path) {
         QSqlQuery query;
         query.prepare(
             "INSERT INTO Tracks(Path, Stars, Rating) "
@@ -125,7 +227,7 @@ public:
         return query.value(0).toInt();
     }
 
-    void deleteTrack(QString path) {
+    void deleteTrack(const QString &path) {
         QSqlQuery query;
         qDebug() << query.exec("select NumbTrack from Tracks where Path = '" + path + "';");
         query.first();
@@ -142,7 +244,7 @@ public:
         return query.exec();
     }
 
-    void deletePlaylists(QString name) {
+    void deletePlaylists(const QString &name) {
         QSqlQuery query;
         //        qDebug() << name;
         qDebug() << query.exec("select NumbPlaylist from Playlists where Name = '" + name + "';");
@@ -152,12 +254,12 @@ public:
         qDebug() << query.exec("delete from Playlists where NumbPlaylist = " + string);
     }
 
-    bool renamePlaylist(QString string, QString newName) {
+    bool renamePlaylist(const QString &string, const QString &newName) {
         QSqlQuery query;
         return query.exec("UPDATE Playlists SET Name = '" + newName + "' WHERE Name ='" + string + "';");
     }
 
-    void insertImage(QString name, QString filename) {
+    void insertImage(const QString &name, const QString &filename) {
         QFile file(filename);
         file.open(QIODevice::ReadOnly);
         QByteArray ba = file.readAll();
@@ -176,7 +278,7 @@ public:
         return query.value(0).toByteArray();
     }
 
-    void saveImage(QString filename) {
+    void saveImage(const QString &filename) {
         QByteArray mass = GetImage(filename);
         QPixmap pixmap = QPixmap();
         pixmap.loadFromData(mass);
@@ -188,6 +290,8 @@ public:
 
     void deleteImage(const QString &name) {
         QSqlQuery query;
-        qDebug() << "delete photo " << name << query.exec("DELETE IMAGES from Playlists where Name = '" + name + "';");
+        qDebug() << "delete photo "
+                 << "UPDATE Playlists SET IMAGES = '' where Name = '" + name + "';" << query.exec("UPDATE Playlists SET IMAGES = '' where Name = '" + name + "';");
+        QFile::remove(name + ".png");
     }
 };

@@ -27,12 +27,12 @@ public:
     explicit musicWidget(QWidget *parent = nullptr);
     ~musicWidget();
 
-
     void paintEvent(QPaintEvent *);
     bool setMusic(const QString& path);
     QString getPathMusic(void);
     bool eventFilter(QObject *obj, QEvent *event);
     void clickDubleWidget(void);
+    void setStylePlay(void);
     void fileChanged(const QString &path);
 
 signals:

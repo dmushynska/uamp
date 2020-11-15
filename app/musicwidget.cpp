@@ -17,9 +17,6 @@ musicWidget::musicWidget(QWidget *parent) :
     connect(this, &musicWidget::dubleClick, this, &musicWidget::clickDubleWidget);
 }
 
-
-
-
 void musicWidget::clickDubleWidget(void) {
     m_main->resetObjectName();
     setObjectName("Play");
@@ -28,6 +25,12 @@ void musicWidget::clickDubleWidget(void) {
     this->style()->polish(this);
 }
 
+void musicWidget::setStylePlay(void) {
+    setObjectName("Play");
+    this->m_main->setPlayMusic(this->ui->nameMusic->text(), this->m_path);
+    this->style()->unpolish(this);
+    this->style()->polish(this);
+}
 
 bool musicWidget::setMusic(const QString& path) {
     QFile file(path);
