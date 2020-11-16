@@ -28,6 +28,7 @@ public:
     void clickShortKeyRewind(void);
     void clickShortKeyFastForward(void);
     void loadingSettings(DataBase *db);
+    void pause(void);
 
 private:
     QString getTime(qint64 time);

@@ -8,6 +8,7 @@
 #include "database.h"
 #include "ui_generalwindow.h"
 #include "windowsetting.h"
+#include "radio.h"
 
 QString generalWindow::GetFileName(const QString& path) {
     TagLib::FileRef f(path.toUtf8().constData());
@@ -32,7 +33,6 @@ generalWindow::generalWindow(QWidget* parent) : QMainWindow(parent),
     m_MusicList = new MusicList(this);
     this->ui->horizontalLayout->addWidget(m_MusicList);
     m_WindowTag = new DTagMusic(this);
-    
 }
 
 generalWindow::~generalWindow() {
@@ -134,6 +134,12 @@ void generalWindow::on_action_Next_triggered()
 void generalWindow::on_action_Previous_triggered()
 {
     previousMusic();
+}
+
+
+void generalWindow::pause(void) {
+    m_playMusic->pause();
+    m_MusicList->stopRadio();
 }
 
 void generalWindow::on_action_Play_Pause_triggered()

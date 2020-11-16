@@ -14,6 +14,7 @@ class MusicList;
 class DTagMusic;
 class PlayMusic;
 class DataBase;
+class radio;
 
 namespace Ui {
 class generalWindow;
@@ -40,6 +41,7 @@ public:
     void saveSettings(void);
     void loadingSettings(void);
     void setPlayMusic(const QString& name, const QString& path);
+    void pause(void);
 
 private slots:
 

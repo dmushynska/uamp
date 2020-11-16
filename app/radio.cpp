@@ -1,5 +1,6 @@
 #include "radio.h"
 #include "ui_radio.h"
+#include "generalwindow.h"
 
 #include <QMediaPlayer>
 
@@ -8,6 +9,7 @@ radio::radio(QWidget *parent) :
     ui(new Ui::radio)
 {
     ui->setupUi(this);
+    m_main = qobject_cast<generalWindow*>(parent);
 }
 
 radio::~radio()
@@ -44,7 +46,12 @@ void radio::on_Stop_clicked()
     m_player->stop();
 }
 
+void radio::pause(void) {
+    m_player->stop();
+}
+
 void radio::on_Play_clicked()
 {
+    m_main->pause();
     m_player->play();
 }

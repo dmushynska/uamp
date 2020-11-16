@@ -8,6 +8,8 @@ namespace Ui {
 class radio;
 }
 
+class generalWindow;
+
 class radio : public QWidget
 {
     Q_OBJECT
@@ -15,6 +17,7 @@ class radio : public QWidget
 public:
     explicit radio(QWidget *parent = nullptr);
     ~radio();
+    void pause();
 
 private slots:
     void on_RadioROKS_clicked();
@@ -32,6 +35,7 @@ private slots:
 private:
     Ui::radio *ui;
     QMediaPlayer *m_player = new QMediaPlayer;
+    generalWindow *m_main;
 };
 
 #endif // RADIO_H

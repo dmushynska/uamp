@@ -31,6 +31,11 @@ PlayMusic::~PlayMusic()
     delete ui;
 }
 
+
+void PlayMusic::pause(void) {
+    this->on_ButtonPause_clicked();
+}
+
 void PlayMusic::clickShortKeyPlay (void) {
     if (this->ui->ButtonPlay->isHidden()) {
         on_ButtonPause_clicked();
@@ -164,6 +169,7 @@ void PlayMusic::on_ButtinStop_clicked()
 
 void PlayMusic::on_ButtonPlay_clicked()
 {
+    m_window->pause();
     m_media->play();
 }
 

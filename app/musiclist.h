@@ -11,6 +11,7 @@ class MusicList;
 class musicWidget;
 class generalWindow;
 class DataBase;
+class radio;
 
 class MusicList : public QWidget
 {
@@ -28,6 +29,7 @@ public:
     void playRandom(void);
     void chengeTypeSort(WindowSetting::Sort type);
     void loadingSettings(DataBase *db);
+    void stopRadio(void);
 
 private:
     void insertWindgetPos(musicWidget *newMusic, WindowSetting::Sort type);
@@ -35,6 +37,7 @@ private:
 private:
     Ui::MusicList *ui;
     generalWindow *m_main;
+    radio *m_radio;
 };
 
 #endif // MUSICLIST_H

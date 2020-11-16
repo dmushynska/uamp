@@ -19,7 +19,12 @@ MusicList::MusicList(QWidget *parent) : QWidget(parent),
     ui->tab->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->tab, &QWidget::customContextMenuRequested, this, &MusicList::customContextMenuRequested);
     ui->Playlists->addWidget(new Playlist(m_main));
-    ui->radio->addWidget(new radio);
+    m_radio = new radio(m_main);
+    ui->radio->addWidget(m_radio);
+}
+
+void MusicList::stopRadio(void) {
+    m_radio->pause();
 }
 
 void MusicList::loadingSettings(DataBase *db) {
@@ -184,4 +189,5 @@ MusicList::~MusicList() {
         }
     }
     delete ui;
+    delete m_radio;
 }
