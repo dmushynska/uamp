@@ -1,6 +1,5 @@
 #pragma once
 #include <QBuffer>
-#include <QDebug>
 #include <QDir>
 #include <QPushButton>
 #include <QSqlDatabase>
@@ -47,8 +46,7 @@ public:
         QSqlQuery query;
         QList<QString> list;
         query.exec("select Path from SavePlaylist");
-        query.first();
-        if (query.value(0).toString().size() > 0)
+        if (query.first())
             list.push_back(query.value(0).toString());
         while (query.next()) {
             list.push_back(query.value(0).toString());
@@ -229,9 +227,9 @@ public:
 
     void deleteTrack(const QString &path) {
         QSqlQuery query;
-        qDebug() << query.exec("select NumbTrack from Tracks where Path = '" + path + "';");
+        query.exec("select NumbTrack from Tracks where Path = '" + path + "';");
         query.first();
-        qDebug() << query.exec("delete from TrackPlaylists where NumbTrack = " + query.value(0).toString());
+        query.exec("delete from TrackPlaylists where NumbTrack = " + query.value(0).toString());
     }
 
     bool addToTrackPlaylists(int track, int playlist) {
@@ -246,12 +244,11 @@ public:
 
     void deletePlaylists(const QString &name) {
         QSqlQuery query;
-        //        qDebug() << name;
-        qDebug() << query.exec("select NumbPlaylist from Playlists where Name = '" + name + "';");
+        query.exec("select NumbPlaylist from Playlists where Name = '" + name + "';");
         query.first();
         QString string = query.value(0).toString();
-        qDebug() << query.exec("delete from TrackPlaylists where NumbPlaylist = " + string);
-        qDebug() << query.exec("delete from Playlists where NumbPlaylist = " + string);
+        query.exec("delete from TrackPlaylists where NumbPlaylist = " + string);
+        query.exec("delete from Playlists where NumbPlaylist = " + string);
     }
 
     bool renamePlaylist(const QString &string, const QString &newName) {
@@ -267,13 +264,13 @@ public:
         query.prepare("UPDATE Playlists SET IMAGES = :image WHERE Name = :name;");
         query.bindValue(":image", ba, QSql::InOut | QSql::Binary);
         query.bindValue(":name", name);
-        qDebug() << "photo " << query.exec();
+        query.exec();
         file.close();
     }
 
     QByteArray GetImage(const QString &name) {
         QSqlQuery query;
-        qDebug() << query.exec("select IMAGES from Playlists where Name = '" + name + "';");
+        query.exec("select IMAGES from Playlists where Name = '" + name + "';");
         query.first();
         return query.value(0).toByteArray();
     }
@@ -290,8 +287,7 @@ public:
 
     void deleteImage(const QString &name) {
         QSqlQuery query;
-        qDebug() << "delete photo "
-                 << "UPDATE Playlists SET IMAGES = '' where Name = '" + name + "';" << query.exec("UPDATE Playlists SET IMAGES = '' where Name = '" + name + "';");
+        query.exec("UPDATE Playlists SET IMAGES = '' where Name = '" + name + "';");
         QFile::remove(name + ".png");
     }
 };

@@ -17,7 +17,7 @@ void Playlist::exportPlaylist(QTreeWidgetItem *my) {
             MyTreeWidgetItem *item = dynamic_cast<MyTreeWidgetItem *>(my->child(i));
             playlist->addMedia(QUrl(item->GetPath()));
         }
-        qDebug() << playlist->save(QUrl::fromLocalFile(filename), "m3u");
+        playlist->save(QUrl::fromLocalFile(filename), "m3u");
     }
 }
 
@@ -85,7 +85,6 @@ void Playlist::clickMouse(const QPoint &point) {
             });
 
             myMenu.addAction("add track to play", this, [this, item]() {
-                qDebug() << "add track to play";
                 m_main->addNewMusicToQueue(item->GetPath());
             });
         } else {
@@ -98,7 +97,7 @@ void Playlist::clickMouse(const QPoint &point) {
             });
 
             myMenu.addAction("add new playlist", this, [this]() {
-                QString defaultText("new name å" + m_user);
+                QString defaultText("new name");
                 bool ok;
                 QString caseInput = QInputDialog::getText(this, tr("new playlist"), ui->treeWidget->currentItem()->text(0), QLineEdit::Normal, defaultText, &ok);
                 if (caseInput != nullptr) {
@@ -184,7 +183,7 @@ Playlist::Playlist(QWidget *parent) : QWidget(parent),
     m_main->m_db->SignUp("users", "1234");
     m_user = "users";
     if (ui->treeWidget->topLevelItemCount() == 0)
-        m_main->m_db->addToPlaylists("New Playlist " + m_user, m_user);
+        m_main->m_db->addToPlaylists("New Playlist", m_user);
     m_main->m_db->selectPlaylistFromDataBase(ui->treeWidget, m_user, m_main);
     ui->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->treeWidget, &QTreeWidget::customContextMenuRequested, this, &Playlist::clickMouse);

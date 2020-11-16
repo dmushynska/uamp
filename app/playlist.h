@@ -2,7 +2,6 @@
 #define PLAYLIST_H
 
 #include <QWidget>
-#include <QDebug>
 #include <QMenu>
 #include "database.h"
 

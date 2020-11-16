@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>355</width>
-    <height>450</height>
+    <height>460</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,19 +19,19 @@
   <property name="minimumSize">
    <size>
     <width>355</width>
-    <height>450</height>
+    <height>460</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>355</width>
-    <height>450</height>
+    <height>460</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>6</x>
@@ -138,7 +138,7 @@
          </size>
         </property>
         <property name="text">
-         <string>Chenge img</string>
+         <string>Change</string>
         </property>
        </widget>
       </item>
