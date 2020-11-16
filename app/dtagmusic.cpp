@@ -8,7 +8,8 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QBuffer>
-
+#include "unsynchronizedlyricsframe.h"
+#include "synchronizedlyricsframe.h"
 
 static void setNewImg(const QString& pathFile, const QString& pathImg) {
     TagLib::MPEG::File file(pathFile.toUtf8().constData());
@@ -54,7 +55,6 @@ DTagMusic::DTagMusic(QWidget *parent) :
     connect(ui->m_check_box,  &QCheckBox::clicked, this, &DTagMusic::checkBoxChenge);
     this->setModal(true);
     connect(this->ui->buttonBox, &QDialogButtonBox::accepted, this, &DTagMusic::saveChengeTag);
-    // connect(this->ui->m_Img, &Q)
     ui->m_Img->setScaledContents(true);
 }
 
@@ -64,7 +64,8 @@ void DTagMusic::checkBoxChenge() {
         ui->m_Albom->setReadOnly(false);
         ui->m_Genre->setReadOnly(false);
         ui->m_Title->setReadOnly(false);
-        ui->m_Lyric->setReadOnly(false);
+        if (ui->m_Path->text().right(3).toUpper() == "MP3")
+            ui->m_Lyric->setReadOnly(false);
     }
     else {
         ui->m_artist->setReadOnly(true);
@@ -75,8 +76,27 @@ void DTagMusic::checkBoxChenge() {
     }
 }
 
+static QString getLyric(TagLib::ID3v2::Tag *tag) {
+    TagLib::ID3v2::FrameList frames = tag->frameListMap()["USLT"];
+    TagLib::ID3v2::UnsynchronizedLyricsFrame *frame = NULL;
+    QString lyric;
+
+    if (!frames.isEmpty()) {
+        frame = dynamic_cast<TagLib::ID3v2::UnsynchronizedLyricsFrame *>(frames.front());
+        if (frame)
+            lyric = frame->text().toCString();
+    }
+    return lyric;
+}
+
 void DTagMusic::setTagWindow(const QString& path) {
     ui->m_Path->setText(path);
+    ui->m_check_box->setCheckState(Qt::Unchecked);
+    ui->m_artist->setReadOnly(true);
+    ui->m_Albom->setReadOnly(true);
+    ui->m_Genre->setReadOnly(true);
+    ui->m_Title->setReadOnly(true);
+    ui->m_Lyric->setReadOnly(true);
     {
         ui->ButtonChengeImg->setEnabled(true);
         m_name.clear();
@@ -89,6 +109,7 @@ void DTagMusic::setTagWindow(const QString& path) {
             
             if(tag) {
                 TagLib::ID3v2::FrameList frameList = tag->frameListMap()["APIC"];
+
                 if (!frameList.isEmpty()) {
                     TagLib::ID3v2::AttachedPictureFrame *coverImg = static_cast<TagLib::ID3v2::AttachedPictureFrame *>(frameList.front());
                     QImage coverQImg;
@@ -108,6 +129,7 @@ void DTagMusic::setTagWindow(const QString& path) {
                         h = 240;
                     ui->m_Img->setFixedWidth(h);
                 }
+                ui->m_Lyric->setText(getLyric(tag));
             }
         }
         else {
@@ -123,9 +145,9 @@ void DTagMusic::setTagWindow(const QString& path) {
         ui->m_Albom->setText(f.tag()->album().toCString());
         ui->m_Genre->setText(f.tag()->genre().toCString());
         ui->m_Title->setText(f.tag()->title().toCString());
-        // ui->m_Lyric->setText(f.tag()->lyric().toCString());
     }
 }
+
 
 void DTagMusic::saveChengeTag(void) {
     if (ui->m_check_box->isChecked()) {
@@ -135,6 +157,8 @@ void DTagMusic::saveChengeTag(void) {
             QMessageBox messageBox;
             messageBox.critical(this,"Error","PErmision ERROR!");
             messageBox.setFixedSize(500,200);
+            file.close();
+            return;
         }
         else {
             TagLib::FileRef f(ui->m_Path->text().toUtf8().constData());
@@ -149,6 +173,16 @@ void DTagMusic::saveChengeTag(void) {
     }
     if (m_name.size() > 0)
         setNewImg(ui->m_Path->text(), m_name);
+    if (ui->m_Path->text().right(3).toUpper() == "MP3") {
+        TagLib::MPEG::File file(ui->m_Path->text().toUtf8().data());
+        TagLib::ID3v2::FrameList frames = file.ID3v2Tag()->frameListMap()["USLT"];
+        TagLib::ID3v2::UnsynchronizedLyricsFrame *frame = new TagLib::ID3v2::UnsynchronizedLyricsFrame;
+        if (!file.ID3v2Tag()->frameListMap()["USLT"].isEmpty())
+            file.ID3v2Tag()->removeFrames(file.ID3v2Tag()->frameListMap()["USLT"].front()->frameID());
+        frame->setText(ui->m_Lyric->toPlainText().toUtf8().data());
+        file.ID3v2Tag()->addFrame(frame);
+        file.save();
+    }
 }
 
 DTagMusic::~DTagMusic()

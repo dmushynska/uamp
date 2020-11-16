@@ -34,6 +34,7 @@ void WindowSetting::on_pushButton_Save_clicked()
         this->m_TypeSort = static_cast <Sort>(ui->TypeSort->currentIndex());
         this->m_main->setSort(this->m_TypeSort);
     }
+    this->hide();
 }
 
 void WindowSetting::loadingSettings(DataBase *db) {
@@ -55,6 +56,7 @@ void WindowSetting::on_pushButton_Cancel_clicked()
 {
     ui->TypePlay->setCurrentIndex(static_cast<int>(this->m_TypeNextMusic));
     ui->TypeSort->setCurrentIndex(static_cast<int>(this->m_TypeSort));
+    this->hide();
 }
 
 WindowSetting::nextMusic WindowSetting::getTypeNext() {
