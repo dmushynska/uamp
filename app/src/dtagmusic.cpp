@@ -122,7 +122,7 @@ void DTagMusic::setTagWindow(const QString& path) {
                 }
                 else
                 {
-                    QImage image("./app/download.jpeg");
+                    QImage image("./app/resources/default.jpeg");
                     ui->m_Img->setPixmap(QPixmap::fromImage(image));
                     int h = image.width() * 120 / image.height();
                     if (h > 240)
@@ -133,7 +133,7 @@ void DTagMusic::setTagWindow(const QString& path) {
             }
         }
         else {
-            QImage image("./app/download.jpeg");
+            QImage image("./app/resources/default.jpeg");
             ui->m_Img->setPixmap(QPixmap::fromImage(image));
             int h = image.width() * 120 / image.height();
             if (h > 240)

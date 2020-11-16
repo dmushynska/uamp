@@ -2,8 +2,7 @@ cmake_minimum_required(VERSION 3.18.2)
 
 set(CMAKE_CXX_STANDARD 17)
 set(NAME uamp)
-set(SOURCE_EXE main.cpp dtagmusic.cpp generalwindow.cpp radio.cpp
-    musicwidget.cpp musiclist.cpp playmusic.cpp windowsetting.cpp playlist.cpp mytreewidgetitem.h)
+set(SOURCE_EXE main.cpp)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -53,9 +52,11 @@ include_directories(
     ../3dparty/taglib/
 )
 
+add_subdirectory(src)
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../../)
 
 add_executable(${NAME} ${SOURCE_EXE})
 
 
-target_link_libraries(${NAME} tag Qt5::Widgets Qt5::Multimedia Qt5::Core Qt5::Quick Qt5::Sql )
+target_link_libraries(${NAME} tag  src Qt5::Widgets Qt5::Multimedia Qt5::Core Qt5::Quick Qt5::Sql )
